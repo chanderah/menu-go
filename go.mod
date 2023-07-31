@@ -2,8 +2,6 @@ module github.com/chanderah/menu-go
 
 go 1.20
 
-require github.com/wpcodevo/golang-gorm-postgres v0.0.0-20230325205328-be47b35ea9b4
-
 require (
 	github.com/bep/godartsass v1.2.0 // indirect
 	github.com/bep/godartsass/v2 v2.0.0 // indirect

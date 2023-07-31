@@ -26,7 +26,8 @@ func Create(c *gin.Context) {
 	}
 
 	post := model.Post{Title: data.Title, Content: data.Content};
-	config.Db.Create(&post);
+	config.DB.Create(&post);
 
 	c.JSON(http.StatusOK, gin.H{ "data": post })
+	// response.Ok(post)
 }

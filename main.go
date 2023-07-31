@@ -18,7 +18,7 @@ func main()  {
 			"status": 200,
 			"message": "Welcome!",
 		})
-		});
+	});
 
 	apiRouter:= router.Group("/api")
 

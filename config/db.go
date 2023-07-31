@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-var Db *gorm.DB
+var DB *gorm.DB
 
 func ConnectDb(){
 	err := godotenv.Load()
@@ -34,15 +34,18 @@ func ConnectDb(){
 	db, err:= gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 		NamingStrategy: schema.NamingStrategy{
-			// TablePrefix: "tb_",
-			TablePrefix: "tutorial.",
-			SingularTable: false,
+			TablePrefix: "tb_",
+			SingularTable: true,
+			// TablePrefix: "tutorial.",
+			// SingularTable: false,
 		},
 	})
 
 	if err != nil {
 		log.Fatal("Failed to connect to the Database!")
 	}
+
 	db.AutoMigrate(&model.Post{});
-	Db = db;
+	db.AutoMigrate(&model.User{});
+	DB = db;
 }

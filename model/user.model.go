@@ -3,12 +3,12 @@ package model
 import "time"
 
 type User struct {
-	ID int64 `json:"id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Name string `json:"name"`
-	Role string `json:"role"`
-	CreatedAt time.Time `json:"created_at"`
+	ID uint `json:"id" gorm:"primaryKey"`
+	Role string `json:"role" gorm:"type:varchar(255)"`
+	Username string `json:"username" gorm:"not null" binding:"required"`
+	Password string `json:"password" gorm:"not null" binding:"required"`
+	Name string `json:"name" gorm:"type:varchar(255)"`
+	CreatedAt time.Time `json:"created_at" gorm:"default:NOW()"`
 }
 
 // CREATE TABLE tb_user (
