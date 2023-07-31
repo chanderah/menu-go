@@ -19,13 +19,16 @@ func main()  {
 			"status": 200,
 			"message": "Welcome!",
 		})
-		});
+	});
 
 	apiRouter:= router.Group("/api")
 
 	postRouter:= apiRouter.Group("/post");
 	postRouter.POST("/", controller.All)
-	// postRouter.POST("/create", controller.Create)
+	postRouter.POST("/findById", controller.FindById)
+	postRouter.POST("/create", controller.Create)
+	postRouter.POST("/update", controller.Update)
+	postRouter.POST("/delete", controller.Delete)
 
 	router.Run(server);
 }

@@ -9,30 +9,48 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 func All(c *gin.Context) {
 	post := []model.Post{}
-	if err := config.Db.Select(&post, "SELECT * FROM tutorial.posts"); err != nil {
+	if err := config.DB.Select(&post, "SELECT * FROM tutorial.posts"); err != nil {
+		log.Println(err);
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "not found"})
+	}
+	// c.JSON(http.StatusOK, post)
+	c.JSON(http.StatusOK, gin.H{"data": post})
+}
+
+func FindById(c *gin.Context) {
+	post := []model.Post{}
+	if err := config.DB.Select(&post, "SELECT * FROM tutorial.posts"); err != nil {
 		log.Println(err);
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "not found"})
 	}
 	c.JSON(http.StatusOK, gin.H{"data": post})
 }
 
-// func Create(c *gin.Context) {
-// 	// var data CPost
-// 	var data model.Post
-// 	err:= c.ShouldBindJSON(&data)
-// 	if err != nil {
-// 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-// 			"status": http.StatusBadRequest,
-// 			"message": err.Error(),
-// 		})
-// 		return;
-// 	}
+func Create(c *gin.Context) {
+	post := []model.Post{}
+	if err := config.DB.Select(&post, "SELECT * FROM tutorial.posts"); err != nil {
+		log.Println(err);
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "not found"})
+	}
+	c.JSON(http.StatusOK, gin.H{"data": post})
+}
 
-// 	post := model.Post{Title: data.Title, Content: data.Content};
-// 	config.Db.Create(&post);
+func Update(c *gin.Context) {
+	post := []model.Post{}
+	if err := config.DB.Select(&post, "SELECT * FROM tutorial.posts"); err != nil {
+		log.Println(err);
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "not found"})
+	}
+	c.JSON(http.StatusOK, gin.H{"data": post})
+}
 
-// 	c.JSON(http.StatusOK, gin.H{ "data": post })
-// }
+func Delete(c *gin.Context) {
+	post := []model.Post{}
+	if err := config.DB.Select(&post, "SELECT * FROM tutorial.posts"); err != nil {
+		log.Println(err);
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": "not found"})
+	}
+	c.JSON(http.StatusOK, gin.H{"data": post})
+}
