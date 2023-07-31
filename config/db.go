@@ -5,12 +5,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/chanderah/menu-go/model"
+	_ "github.com/jackc/pgx/v5/stdlib" // library bindings for pgx
+	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
-	"gorm.io/gorm/schema"
 )
 
 var Db *gorm.DB
@@ -31,18 +29,36 @@ func ConnectDb(){
 	TimeZone:= os.Getenv("TimeZone")
 
 	dsn:= fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s TimeZone=%s", DBHost, DBPort, DBUsername, DBPassword, DBName, SSL, TimeZone)
-	db, err:= gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-		NamingStrategy: schema.NamingStrategy{
-			// TablePrefix: "tb_",
-			TablePrefix: "tutorial.",
-			SingularTable: false,
-		},
-	})
-
+	_, err = sqlx.Connect("pgx", dsn);
 	if err != nil {
-		log.Fatal("Failed to connect to the Database!")
+		log.Fatal("Failed to connect to the Database!", err.Error())
+	} else {
+		fmt.Println("Connection is established!.")
 	}
-	db.AutoMigrate(&model.Post{});
-	Db = db;
+
+	// data := model.Post{}
+    // rows, err := db.Queryx("SELECT * FROM tutorial.posts")
+    // for rows.Next() {
+    //     err := rows.StructScan(&data)
+    //     if err != nil {
+    //         log.Fatalln(err)
+    //     }
+    //     fmt.Printf("%#v\n", data)
+    // }
+
+	// dsn:= fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s TimeZone=%s", DBHost, DBPort, DBUsername, DBPassword, DBName, SSL, TimeZone)
+	// db, err:= gorm.Open(postgres.Open(dsn), &gorm.Config{
+	// 	Logger: logger.Default.LogMode(logger.Info),
+	// 	NamingStrategy: schema.NamingStrategy{
+	// 		// TablePrefix: "tb_",
+	// 		TablePrefix: "tutorial.",
+	// 		SingularTable: false,
+	// 	},
+	// })
+
+	// if err != nil {
+	// 	log.Fatal("Failed to connect to the Database!")
+	// }
+	// db.AutoMigrate(&model.Post{});
+	// Db = db;
 }

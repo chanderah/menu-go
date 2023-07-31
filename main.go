@@ -10,6 +10,7 @@ import (
 
 func main()  {
 	config.ConnectDb();
+
 	server:= ":3001";
 	router:= gin.Default();
 
