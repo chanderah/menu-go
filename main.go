@@ -24,7 +24,8 @@ func main()  {
 	apiRouter:= router.Group("/api")
 
 	postRouter:= apiRouter.Group("/post");
-	postRouter.POST("/create", controller.Create)
+	postRouter.POST("/", controller.All)
+	// postRouter.POST("/create", controller.Create)
 
 	router.Run(server);
 }

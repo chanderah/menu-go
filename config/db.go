@@ -4,14 +4,26 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	_ "github.com/jackc/pgx/v5/stdlib" // library bindings for pgx
 	"github.com/jmoiron/sqlx"
+	"github.com/jmoiron/sqlx/reflectx"
 	"github.com/joho/godotenv"
-	"gorm.io/gorm"
 )
 
-var Db *gorm.DB
+var (
+	Db *sqlx.DB
+)
+
+var schema =
+`	CREATE TABLE IF NOT EXISTS tutorial.posts (
+		id BIGSERIAL PRIMARY KEY,
+		title VARCHAR(255) NOT NULL,
+		content TEXT NOT NULL,
+		created_at timestamp default NOW()
+	);
+`
 
 func ConnectDb(){
 	err := godotenv.Load()
@@ -29,36 +41,15 @@ func ConnectDb(){
 	TimeZone:= os.Getenv("TimeZone")
 
 	dsn:= fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s TimeZone=%s", DBHost, DBPort, DBUsername, DBPassword, DBName, SSL, TimeZone)
-	_, err = sqlx.Connect("pgx", dsn);
+	db, err:= sqlx.Connect("pgx", dsn);
 	if err != nil {
 		log.Fatal("Failed to connect to the Database!", err.Error())
-	} else {
-		fmt.Println("Connection is established!.")
+	}
+	_, err = db.Exec(schema)
+	if err != nil {
+		log.Fatal("Failed to execute the Schema.", err.Error())
 	}
 
-	// data := model.Post{}
-    // rows, err := db.Queryx("SELECT * FROM tutorial.posts")
-    // for rows.Next() {
-    //     err := rows.StructScan(&data)
-    //     if err != nil {
-    //         log.Fatalln(err)
-    //     }
-    //     fmt.Printf("%#v\n", data)
-    // }
-
-	// dsn:= fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s TimeZone=%s", DBHost, DBPort, DBUsername, DBPassword, DBName, SSL, TimeZone)
-	// db, err:= gorm.Open(postgres.Open(dsn), &gorm.Config{
-	// 	Logger: logger.Default.LogMode(logger.Info),
-	// 	NamingStrategy: schema.NamingStrategy{
-	// 		// TablePrefix: "tb_",
-	// 		TablePrefix: "tutorial.",
-	// 		SingularTable: false,
-	// 	},
-	// })
-
-	// if err != nil {
-	// 	log.Fatal("Failed to connect to the Database!")
-	// }
-	// db.AutoMigrate(&model.Post{});
-	// Db = db;
+	db.Mapper = reflectx.NewMapperFunc("json", strings.ToLower)
+	Db = db;
 }
