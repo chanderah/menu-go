@@ -84,11 +84,11 @@ func GetUsers(c *gin.Context) {
 }
 
 func FindUser(c *gin.Context) {
-	var data model.User
+	var data model.UserBasic
 
 	c.ShouldBindJSON(&data)
 	// if res:=util.DB.Raw("select * from users where id = ?", 3).Scan(&data)
-	if res := util.DB.First(&data, "id = ?", data.ID); res.Error != nil {
+	if res := util.DB.First(&model.User{}, "id = ?", data.ID).Scan(&data); res.Error != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 			"status":  http.StatusNotFound,
 			"message": "Data not found!",
