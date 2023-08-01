@@ -10,7 +10,7 @@ type User struct {
 	Name      string    `json:"name" gorm:"type:varchar(255)"`
 	Email     string    `json:"email" gorm:"type:varchar(255)"` // unique??
 	Token     string    `json:"token" gorm:"not null"`
-	CreatedAt time.Time `json:"created_at" gorm:"default:NOW()"`
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 }
 
 type UserBasic struct {

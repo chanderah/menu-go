@@ -2,6 +2,8 @@ module github.com/chanderah/menu-go
 
 go 1.20
 
+require github.com/jinzhu/copier v0.3.5
+
 require (
 	github.com/bep/godartsass v1.2.0 // indirect
 	github.com/bep/godartsass/v2 v2.0.0 // indirect
@@ -20,6 +22,7 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.14.1 // indirect
+	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gohugoio/hugo v0.115.4 // indirect
 	github.com/google/uuid v1.3.0 // indirect
@@ -29,7 +32,6 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.3.1 // indirect
-	github.com/jinzhu/copier v0.3.5
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
@@ -62,6 +64,7 @@ require (
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gorm.io/driver/mysql v1.5.1 // indirect
 	gorm.io/driver/postgres v1.5.2 // indirect
 	gorm.io/gorm v1.25.2 // indirect
 )
