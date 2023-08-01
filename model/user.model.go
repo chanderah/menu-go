@@ -13,6 +13,15 @@ type User struct {
 	CreatedAt time.Time `json:"created_at" gorm:"default:NOW()"`
 }
 
+type UserBasic struct {
+	ID        uint      `json:"id"`
+	Role      string    `json:"role"`
+	Username  string    `json:"username"`
+	Name      string    `json:"name"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 // CREATE TABLE tb_user (
 //     id SERIAL PRIMARY KEY,
 //     username TEXT,

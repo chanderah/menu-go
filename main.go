@@ -3,14 +3,14 @@ package main
 import (
 	"net/http"
 
-	"github.com/chanderah/menu-go/config"
 	"github.com/chanderah/menu-go/controller"
 	"github.com/chanderah/menu-go/middleware"
+	"github.com/chanderah/menu-go/util"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	config.ConnectDb()
+	util.GetConnection()
 
 	port := "3001"
 	router := gin.Default()

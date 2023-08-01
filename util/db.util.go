@@ -1,4 +1,4 @@
-package config
+package util
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ import (
 
 var DB *gorm.DB
 
-func ConnectDb() {
+func GetConnection() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file!")
@@ -34,10 +34,10 @@ func ConnectDb() {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 		NamingStrategy: schema.NamingStrategy{
-			// TablePrefix: "tb_",
-			// SingularTable: true,
-			TablePrefix:   "tutorial.",
-			SingularTable: false,
+			TablePrefix:   "tb_",
+			SingularTable: true,
+			// TablePrefix:   "tutorial.",
+			// SingularTable: false,
 		},
 	})
 
