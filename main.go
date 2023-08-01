@@ -5,6 +5,7 @@ import (
 
 	"github.com/chanderah/menu-go/config"
 	"github.com/chanderah/menu-go/controller"
+	"github.com/chanderah/menu-go/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,6 +23,7 @@ func main() {
 
 	/* MAIN ROUTE */
 	apiRouter := router.Group("/api")
+	apiRouter.Use(middleware.GinLoggingMiddleware)
 	/* MAIN ROUTE */
 
 	postRouter := apiRouter.Group("/post")
