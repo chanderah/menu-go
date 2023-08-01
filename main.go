@@ -29,10 +29,19 @@ func main() {
 
 	userRouter := apiRouter.Group("/user")
 	userRouter.POST("/", controller.GetUsers)
-	userRouter.POST("/findById", controller.FindById)
-	userRouter.POST("/create", controller.CreateUser)
+	userRouter.POST("/register", controller.RegisterUser)
+	userRouter.POST("/login", controller.LoginUser)
+
+	userRouter.POST("/findById", controller.FindUser)
 	userRouter.POST("/update", controller.UpdateUser)
 	userRouter.POST("/delete", controller.DeleteUser)
+
+	// userRouter := apiRouter.Group("/user")
+	// userRouter.POST("/", controller.GetUsers)
+	// userRouter.POST("/findById", controller.FindById)
+	// userRouter.POST("/create", controller.CreateUser)
+	// userRouter.POST("/update", controller.UpdateUser)
+	// userRouter.POST("/delete", controller.DeleteUser)
 
 	router.Run(":" + port)
 }
