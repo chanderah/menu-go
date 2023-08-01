@@ -3,11 +3,11 @@ package model
 import "time"
 
 type User struct {
-	ID uint `json:"id" gorm:"primaryKey"`
-	Role string `json:"role" gorm:"type:varchar(255)"`
-	Username string `json:"username" gorm:"not null" binding:"required"`
-	Password string `json:"password" gorm:"not null" binding:"required"`
-	Name string `json:"name" gorm:"type:varchar(255)"`
+	ID        uint      `json:"id" gorm:"primaryKey"`
+	Role      string    `json:"role" gorm:"type:varchar(255)"`
+	Username  string    `json:"username" gorm:"type:varchar(100); not null" binding:"required"`
+	Password  string    `json:"password" gorm:"not null"`
+	Name      string    `json:"name" gorm:"type:varchar(255)"`
 	CreatedAt time.Time `json:"created_at" gorm:"default:NOW()"`
 }
 

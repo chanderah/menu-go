@@ -19,87 +19,96 @@ func GetUsers(c *gin.Context) {
 	var data []model.User
 	if res := config.DB.Find(&data); res.Error != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"status": http.StatusInternalServerError,
+			"status":  http.StatusInternalServerError,
 			"message": res.Error,
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"status": 200,
+		"status":  200,
 		"message": "success",
-		"data": data,
+		"data":    data,
 	})
 }
 
 func FindById(c *gin.Context) {
-	var data model.User;
+	var data model.User
 
-	c.ShouldBindJSON(&data);
+	c.ShouldBindJSON(&data)
 	// if res:=config.DB.Raw("select * from users where id = ?", 3).Scan(&data)
-	if res:= config.DB.First(&data, "id = ?", data.ID); res.Error != nil {
+	if res := config.DB.First(&data, "id = ?", data.ID); res.Error != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
-			"status": http.StatusNotFound,
+			"status":  http.StatusNotFound,
 			"message": "Data not found!",
 		})
-		return;
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status": 200,
+		"status":  200,
 		"message": "success",
-		"data": data,
+		"data":    data,
 	})
 }
 
 func CreateUser(c *gin.Context) {
 	var data model.User
-	if err:= c.ShouldBindJSON(&data); err != nil {
+	if err := c.ShouldBindJSON(&data); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
+			"status":  http.StatusBadRequest,
 			"message": err.Error(),
 		})
-		return;
+		return
 	}
 
-	config.DB.Create(&data);
+	config.DB.Create(&data)
 	c.JSON(http.StatusOK, gin.H{
-		"status": 200,
+		"status":  200,
 		"message": "success",
-		"data": data,
+		"data":    data,
 	})
 }
 
 func UpdateUser(c *gin.Context) {
-	var data model.User
-	if err:= c.ShouldBindJSON(&data); err != nil {
+	var input, data model.User
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
+			"status":  http.StatusBadRequest,
 			"message": err.Error(),
 		})
-		return;
+		return
 	}
 
-	config.DB.Create(&data);
+	if res := config.DB.First(&data, "id = ?", input.ID); res.Error != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusNotFound,
+			"message": "Data not found!",
+		})
+		return
+	}
+
+	config.DB.Model(&data).Updates(input)
 	c.JSON(http.StatusOK, gin.H{
-		"status": 200,
+		"status":  200,
 		"message": "success",
-		"data": data,
+		"data":    data,
 	})
 }
 
 func DeleteUser(c *gin.Context) {
 	var data model.User
-	if err:= c.ShouldBindJSON(&data); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"status": http.StatusBadRequest,
-			"message": err.Error(),
+
+	c.ShouldBindJSON(&data)
+	if res := config.DB.First(&data, "id = ?", data.ID); res.Error != nil {
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+			"status":  http.StatusNotFound,
+			"message": "Data not found!",
 		})
-		return;
+		return
 	}
 
-	config.DB.Create(&data);
+	config.DB.Delete(&data)
 	c.JSON(http.StatusOK, gin.H{
-		"status": 200,
+		"status":  200,
 		"message": "success",
-		"data": data,
 	})
 }
