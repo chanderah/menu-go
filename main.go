@@ -10,9 +10,9 @@ import (
 
 func main()  {
 	config.ConnectDb();
-	server:= ":3001";
-	router:= gin.Default();
 
+	port:= "3001";
+	router:= gin.Default();
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status": 200,
@@ -20,10 +20,19 @@ func main()  {
 		})
 	});
 
+	/* MAIN ROUTE */
 	apiRouter:= router.Group("/api")
+	/* MAIN ROUTE */
 
 	postRouter:= apiRouter.Group("/post");
-	postRouter.POST("/create", controller.Create)
+	postRouter.POST("/create", controller.CreatePost)
 
-	router.Run(server);
+	userRouter:= apiRouter.Group("/user");
+	userRouter.POST("/", controller.GetUsers)
+	userRouter.POST("/findById", controller.FindById)
+	userRouter.POST("/create", controller.CreateUser)
+	userRouter.POST("/update", controller.CreateUser)
+	userRouter.POST("/delete", controller.CreateUser)
+
+	router.Run(":" + port);
 }

@@ -13,11 +13,10 @@ import (
 // 	Content string `json:"content" binding:"required"`
 // }
 
-func Create(c *gin.Context) {
+func CreatePost(c *gin.Context) {
 	// var data CPost
 	var data model.Post
-	err:= c.ShouldBindJSON(&data)
-	if err != nil {
+	if	err:= c.ShouldBindJSON(&data); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"status": http.StatusBadRequest,
 			"message": err.Error(),

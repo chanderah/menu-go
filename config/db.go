@@ -34,10 +34,10 @@ func ConnectDb(){
 	db, err:= gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix: "tb_",
-			SingularTable: true,
-			// TablePrefix: "tutorial.",
-			// SingularTable: false,
+			// TablePrefix: "tb_",
+			// SingularTable: true,
+			TablePrefix: "tutorial.",
+			SingularTable: false,
 		},
 	})
 
