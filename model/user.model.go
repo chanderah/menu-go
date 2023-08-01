@@ -5,9 +5,10 @@ import "time"
 type User struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`
 	Role      string    `json:"role" gorm:"type:varchar(255)"`
-	Username  string    `json:"username" gorm:"type:varchar(100); not null" binding:"required"`
-	Password  string    `json:"password" gorm:"not null"`
+	Username  string    `json:"username" gorm:"unique; type:varchar(100); not null"`
+	Password  string    `json:"-" gorm:"not null"`
 	Name      string    `json:"name" gorm:"type:varchar(255)"`
+	Email     string    `json:"email" gorm:"type:varchar(255)"` // unique??
 	CreatedAt time.Time `json:"created_at" gorm:"default:NOW()"`
 }
 

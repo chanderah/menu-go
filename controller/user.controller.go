@@ -42,7 +42,6 @@ func FindById(c *gin.Context) {
 		})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
 		"message": "success",
@@ -59,7 +58,6 @@ func CreateUser(c *gin.Context) {
 		})
 		return
 	}
-
 	config.DB.Create(&data)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,
