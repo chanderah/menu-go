@@ -10,7 +10,9 @@ type User struct {
 	Name      string    `json:"name" gorm:"type:varchar(255)"`
 	Email     string    `json:"email" gorm:"type:varchar(255)"` // unique??
 	Token     string    `json:"token" gorm:"not null"`
-	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
+	CreatedAt time.Time `json:"createdAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"`
+	// UpdatedAt  time.Time `gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
+	// CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 }
 
 type UserBasic struct {
@@ -19,7 +21,7 @@ type UserBasic struct {
 	Username  string    `json:"username"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 // CREATE TABLE tb_user (

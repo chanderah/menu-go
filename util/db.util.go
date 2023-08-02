@@ -48,6 +48,7 @@ func GetConnectionMySql() {
 
 	// db.AutoMigrate(&model.Post{});
 	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.Product{})
 	DB = db
 }
 
