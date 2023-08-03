@@ -10,7 +10,8 @@ import (
 )
 
 func main() {
-	util.GetConnectionMySql()
+	// util.GetConnectionMySql()
+	util.GetConnectionPostgres()
 
 	port := "3001"
 	router := gin.Default()

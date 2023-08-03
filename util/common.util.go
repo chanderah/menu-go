@@ -10,22 +10,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func IsEmpty(object interface{}) bool {
-    if object == nil {
-        return true
-    } else if object == "" {
-        return true
-    } else if object == false {
-        return true
-    }
+func TypeOf(data interface{}) string {
+	return reflect.TypeOf(data).String()
+}
 
-    if reflect.ValueOf(object).Kind() == reflect.Struct {
-        empty := reflect.New(reflect.TypeOf(object)).Elem().Interface()
-        if reflect.DeepEqual(object, empty) {
-            return true
-        }
-    }
-    return false;
+func IsEmpty(object interface{}) bool {
+	if object == nil {
+		return true
+	} else if object == "" {
+		return true
+	} else if object == false {
+		return true
+	}
+
+	if reflect.ValueOf(object).Kind() == reflect.Struct {
+		empty := reflect.New(reflect.TypeOf(object)).Elem().Interface()
+		if reflect.DeepEqual(object, empty) {
+			return true
+		}
+	}
+	return false
 }
 
 func ShouldBindWithoutTag(c *gin.Context, dest interface{}) error {
