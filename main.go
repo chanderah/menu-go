@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
+	"log"
 	"net/http"
 
 	"github.com/chanderah/menu-go/controller"
 	"github.com/chanderah/menu-go/middleware"
+	"github.com/chanderah/menu-go/response"
 	"github.com/chanderah/menu-go/util"
 	"github.com/gin-gonic/gin"
 )
@@ -14,25 +17,35 @@ func main() {
 }
 
 func serve() {
-	// util.GetConnectionMySql()
-	util.GetConnectionPostgres()
+	util.GetConnectionMySql()
+	// util.GetConnectionPostgres()
 
 	port := "3001"
-	router := gin.Default()
+	router := route()
+
+	srv := &http.Server{
+		Addr:    ":" + port,
+		Handler: router,
+	}
+
 	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status":  200,
-			"message": "Welcome!",
-		})
+		response.OK(c, "Welcome!")
+	})
+	router.GET("/kill", func(c *gin.Context) {
+		log.Println("Shutting down...")
+		srv.Shutdown(context.Background())
 	})
 
-	/* MAIN ROUTE */
+	if err := srv.ListenAndServe(); err != nil {
+		log.Printf("listen: %s\n", err)
+	}
+}
+
+func route() *gin.Engine {
+	router := gin.New()
+	/* MAIN API ROUTE */
 	apiRouter := router.Group("/api")
 	apiRouter.Use(middleware.GinLoggingMiddleware)
-	{
-		postRouter := apiRouter.Group("/post")
-		postRouter.POST("/create", controller.CreatePost)
-	}
 	{
 		userRouter := apiRouter.Group("/user")
 		userRouter.POST("/", controller.GetUsers)
@@ -44,5 +57,16 @@ func serve() {
 		userRouter.POST("/update", controller.UpdateUser)
 		userRouter.POST("/delete", controller.DeleteUser)
 	}
-	router.Run(":" + port)
+	{
+		productRouter := apiRouter.Group("/product")
+		productRouter.POST("/", controller.GetUsers)
+		productRouter.POST("/register", controller.RegisterUser)
+		productRouter.POST("/login", controller.LoginUser)
+
+		productRouter.POST("/findById", controller.FindUserById)
+		productRouter.POST("/findByUsername", controller.FindUserByUsername)
+		productRouter.POST("/update", controller.UpdateUser)
+		productRouter.POST("/delete", controller.DeleteUser)
+	}
+	return router
 }
