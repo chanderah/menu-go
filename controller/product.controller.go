@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterUser(c *gin.Context) {
+func CreateProduct(c *gin.Context) {
 	var data model.User
 	if err := c.ShouldBindJSON(&data); err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
@@ -22,26 +22,7 @@ func RegisterUser(c *gin.Context) {
 	response.Void(c)
 }
 
-func LoginUser(c *gin.Context) {
-	var input, data model.User
-
-	c.ShouldBindJSON(&input)
-	if res := util.DB.First(&data, "username = ?", input.Username); res.Error != nil {
-		response.Error(c, http.StatusNotFound, "Data not found!")
-		return
-	}
-	if input.Password != data.Password {
-		response.Error(c, http.StatusUnauthorized, "Bad Credentials!")
-		return
-	}
-	if res := util.DB.Model(&data).Updates(input); res.Error != nil {
-		response.Error(c, http.StatusBadRequest, res.Error.Error())
-		return
-	}
-	response.Void(c)
-}
-
-func GetUsers(c *gin.Context) {
+func GetProducts(c *gin.Context) {
 	var data []model.UserBasic
 	if res := util.DB.Find(&[]model.User{}).Scan(&data); res.Error != nil {
 		response.Error(c, http.StatusBadRequest, res.Error.Error())
@@ -50,7 +31,7 @@ func GetUsers(c *gin.Context) {
 	response.OK(c, data)
 }
 
-func FindUserById(c *gin.Context) {
+func FindProduct(c *gin.Context) {
 	var data model.UserBasic
 	c.ShouldBindJSON(&data)
 	if res := util.DB.First(&model.User{}, "id = ?", data.ID).Scan(&data); res.Error != nil {
@@ -60,17 +41,7 @@ func FindUserById(c *gin.Context) {
 	response.OK(c, data)
 }
 
-func FindUserByUsername(c *gin.Context) {
-	var data model.UserBasic
-	c.ShouldBindJSON(&data)
-	if res := util.DB.First(&model.User{}, "id = ?", data.ID).Scan(&data); res.Error != nil {
-		response.Error(c, http.StatusNotFound, "Data not found!")
-		return
-	}
-	response.OK(c, data)
-}
-
-func UpdateUser(c *gin.Context) {
+func UpdateProduct(c *gin.Context) {
 	var input, data model.User
 	if err := c.ShouldBindJSON(&input); err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
@@ -87,7 +58,7 @@ func UpdateUser(c *gin.Context) {
 	response.Void(c)
 }
 
-func DeleteUser(c *gin.Context) {
+func DeleteProduct(c *gin.Context) {
 	var data model.User
 
 	c.ShouldBindJSON(&data)
