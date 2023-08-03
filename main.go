@@ -10,6 +10,10 @@ import (
 )
 
 func main() {
+	serve()
+}
+
+func serve() {
 	// util.GetConnectionMySql()
 	util.GetConnectionPostgres()
 
