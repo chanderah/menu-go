@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -11,15 +12,26 @@ import (
 
 func main() {
 	// serve()
+	port := "3001"
 	e := echo.New()
 
-	e.Use(middleware.Logger())
+	// e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
 	e.GET("/", hi)
 	e.GET("/hello", hello)
 
-	e.Logger.Fatal(e.Start(":3001"))
+	// e.Logger.Fatal(e.Start(":3001"))
+
+	srv := &http.Server{
+		Addr:    ":" + port,
+		Handler: e,
+	}
+
+	log.Println("Running server...")
+	if err := srv.ListenAndServe(); err != nil {
+		log.Printf("listen: %s\n", err)
+	}
 }
 
 func hi(c echo.Context) error {
