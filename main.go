@@ -20,6 +20,7 @@ func main() {
 
 	e.GET("/", hi)
 	e.GET("/hello", hello)
+	e.POST("/hello", hello)
 
 	// e.Logger.Fatal(e.Start(":3001"))
 
