@@ -1,45 +1,38 @@
 package main
 
 import (
-	"context"
-	"log"
-	"net/http"
-
 	"github.com/chanderah/menu-go/response"
-	"github.com/chanderah/menu-go/util"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	serve()
-}
-
-func serve() {
-	util.GetConnectionMySql()
-	// util.GetConnectionPostgres()
-
+	// serve()
 	port := "3001"
-	router := route()
-
-	srv := &http.Server{
-		Addr:    ":" + port,
-		Handler: router,
-	}
-
+	router := gin.New()
 	router.GET("/", func(c *gin.Context) {
-		response.OK(c, "Welcome!")
-	})
-
-	router.GET("/hi", func(c *gin.Context) {
 		response.OK(c, "Hi!")
 	})
 
-	router.GET("/kill", func(c *gin.Context) {
-		log.Println("Shutting down...")
-		srv.Shutdown(context.Background())
-	})
-
 	router.Run(":" + port)
+
+}
+
+func serve() {
+	// util.GetConnectionMySql()
+	// // util.GetConnectionPostgres()
+
+	// port := "3001"
+	// router := route()
+
+	// router.GET("/", func(c *gin.Context) {
+	// 	response.OK(c, "Welcome!")
+	// })
+
+	// router.GET("/hi", func(c *gin.Context) {
+	// 	response.OK(c, "Hi!")
+	// })
+
+	// router.Run(":" + port)
 
 	// if err := srv.ListenAndServe(); err != nil {
 	// 	log.Printf("listen: %s\n", err)
