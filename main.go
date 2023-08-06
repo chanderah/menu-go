@@ -21,15 +21,6 @@ func serve() {
 	port := "3001"
 	router := route()
 
-	// srv := &http.Server{
-	// 	Addr:    ":" + port,
-	// 	Handler: router,
-	// }
-
-	router.GET("/", func(c *gin.Context) {
-		response.OK(c, "Welcome!")
-	})
-
 	srv := &http.Server{
 		Addr:    ":" + port,
 		Handler: router,
