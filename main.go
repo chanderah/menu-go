@@ -13,20 +13,29 @@ func main() {
 	// serve()
 	e := echo.New()
 
-	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	// Routes
-	e.GET("/", hello)
+	e.GET("/", hi)
+	e.GET("/hello", hello)
 
-	// Start server
 	e.Logger.Fatal(e.Start(":3001"))
 }
 
-// Handler
+func hi(c echo.Context) error {
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status":  200,
+		"message": "success",
+		"data":    "hi!",
+	})
+}
+
 func hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hellooo, World!")
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status":  200,
+		"message": "success",
+		"data":    "hello!",
+	})
 }
 
 func serve() {
