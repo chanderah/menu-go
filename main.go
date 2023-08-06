@@ -39,9 +39,11 @@ func serve() {
 		srv.Shutdown(context.Background())
 	})
 
-	if err := srv.ListenAndServe(); err != nil {
-		log.Printf("listen: %s\n", err)
-	}
+	router.Run(":" + port)
+
+	// if err := srv.ListenAndServe(); err != nil {
+	// 	log.Printf("listen: %s\n", err)
+	// }
 }
 
 func route() *gin.Engine {
