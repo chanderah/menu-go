@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/chanderah/menu-go/model"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -83,6 +82,6 @@ func GetConnectionPostgres() {
 	}
 
 	// db.AutoMigrate(&model.Post{});
-	db.AutoMigrate(&model.User{})
+	// db.AutoMigrate(&model.User{})
 	DB = db
 }
