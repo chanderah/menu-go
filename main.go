@@ -1,10 +1,6 @@
 package main
 
 import (
-	"context"
-	"log"
-	"net/http"
-
 	"github.com/chanderah/menu-go/response"
 	"github.com/chanderah/menu-go/util"
 	"github.com/gin-gonic/gin"
@@ -21,22 +17,15 @@ func serve() {
 	port := "3001"
 	router := route()
 
-	srv := &http.Server{
-		Addr:    ":" + port,
-		Handler: router,
-	}
+	// srv := &http.Server{
+	// 	Addr:    ":" + port,
+	// 	Handler: router,
+	// }
 
 	router.GET("/", func(c *gin.Context) {
 		response.OK(c, "Welcome!")
 	})
-	router.GET("/kill", func(c *gin.Context) {
-		log.Println("Shutting down...")
-		srv.Shutdown(context.Background())
-	})
-
-	if err := srv.ListenAndServe(); err != nil {
-		log.Printf("listen: %s\n", err)
-	}
+	router.Run(":" + port)
 }
 
 func route() *gin.Engine {
