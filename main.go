@@ -33,7 +33,7 @@ func serve() {
 	router.GET("/app/kill", func(c *gin.Context) {
 		log.Println("Shutting down...")
 		if err := srv.Shutdown(context.Background()); err != nil {
-			log.Println("Server is already closed.")
+			log.Println("Server is already closed.", err)
 		}
 	})
 
