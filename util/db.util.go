@@ -16,22 +16,19 @@ import (
 
 var DB *gorm.DB
 
+func export(db *gorm.DB) {
+	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.Product{})
+	DB = db
+}
+
 func GetConnectionMySql() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file!")
 	}
 
-	// connStr := os.Getenv("DB_URL")
-	// DBHost := os.Getenv("DB_HOST")
-	// DBPort := os.Getenv("DB_PORT")
-	// DBName := os.Getenv("DB_NAME")
-	// DBUsername := os.Getenv("DB_USERNAME")
-	// DBPassword := os.Getenv("DB_PASSWORD")
-	// SSL := os.Getenv("SSL")
-	// TimeZone, _ := time.LoadLocation("Asia/Jakarta")
-
-	dsn := "chandra5_chanderah:dhearbiznmd@tcp(chandrasa.fun:3306)/chandra5_menu?charset=utf8mb4&parseTime=True&loc=Asia%2FJakarta"
+	dsn := os.Getenv("DB_DSN")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 		NamingStrategy: schema.NamingStrategy{
@@ -45,11 +42,7 @@ func GetConnectionMySql() {
 	if err != nil {
 		log.Fatal("Failed to connect to the Database!")
 	}
-
-	// db.AutoMigrate(&model.Post{});
-	db.AutoMigrate(&model.User{})
-	db.AutoMigrate(&model.Product{})
-	DB = db
+	export(db)
 }
 
 func GetConnectionPostgres() {
@@ -57,7 +50,6 @@ func GetConnectionPostgres() {
 	if err != nil {
 		log.Fatal("Error loading .env file!")
 	}
-
 	// connStr := os.Getenv("DB_URL")
 	DBHost := os.Getenv("DB_HOST")
 	DBPort := os.Getenv("DB_PORT")
@@ -81,8 +73,5 @@ func GetConnectionPostgres() {
 	if err != nil {
 		log.Fatal("Failed to connect to the Database!")
 	}
-
-	// db.AutoMigrate(&model.Post{});
-	db.AutoMigrate(&model.User{})
-	DB = db
+	export(db)
 }

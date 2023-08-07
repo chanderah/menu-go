@@ -21,8 +21,7 @@ func serve() {
 	util.GetConnectionPostgres()
 
 	port := "3001"
-	router := route()
-
+	router := generateRoute()
 	srv := &http.Server{
 		Addr:    ":" + port,
 		Handler: router,
@@ -41,7 +40,7 @@ func serve() {
 	}
 }
 
-func route() *gin.Engine {
+func generateRoute() *gin.Engine {
 	router := gin.New()
 	/* MAIN API ROUTE */
 	apiRouter := router.Group("/api")
