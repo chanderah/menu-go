@@ -2,7 +2,7 @@
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 
 # Go Files
-go.mod
+# go.mod
 go.sum
 gin-bin
 
