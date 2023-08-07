@@ -28,18 +28,17 @@ func serve() {
 		Handler: router,
 	}
 
-	log.Println(os.Getpid())
-
 	router.GET("/", func(c *gin.Context) {
 		response.OK(c, "Welcome!")
 	})
-	router.GET("/app/info", func(c *gin.Context) {
-		log.Println(os.Getpid())
+	appRouter := router.Group("/app")
+	appRouter.GET("/info", func(c *gin.Context) {
+		response.OK(c, os.Getpid())
 	})
-	router.GET("/app/kill", func(c *gin.Context) {
+	appRouter.GET("/kill", func(c *gin.Context) {
 		log.Println("Shutting down...")
 		if err := srv.Shutdown(context.Background()); err != nil {
-			log.Println("Server is already closed.\n", err)
+			log.Println("Stopping server failed.\n", err)
 		}
 	})
 
@@ -56,24 +55,24 @@ func generateRoute() *gin.Engine {
 	{
 		userRouter := apiRouter.Group("/user")
 		userRouter.POST("/", controller.GetUsers)
+		userRouter.POST("/findById", controller.FindUserById)
+		userRouter.POST("/findByUsername", controller.FindUserByUsername)
+
 		userRouter.POST("/register", controller.RegisterUser)
 		userRouter.POST("/login", controller.LoginUser)
 
-		userRouter.POST("/findById", controller.FindUserById)
-		userRouter.POST("/findByUsername", controller.FindUserByUsername)
 		userRouter.POST("/update", controller.UpdateUser)
 		userRouter.POST("/delete", controller.DeleteUser)
 	}
 	{
 		productRouter := apiRouter.Group("/product")
-		productRouter.POST("/", controller.GetUsers)
-		productRouter.POST("/register", controller.RegisterUser)
-		productRouter.POST("/login", controller.LoginUser)
+		productRouter.POST("/", controller.GetProducts)
+		productRouter.POST("/findById", controller.FindProductById)
+		productRouter.POST("/findByCategory", controller.FindProductByItsCategory)
 
-		productRouter.POST("/findById", controller.FindUserById)
-		productRouter.POST("/findByUsername", controller.FindUserByUsername)
-		productRouter.POST("/update", controller.UpdateUser)
-		productRouter.POST("/delete", controller.DeleteUser)
+		productRouter.POST("/create", controller.CreateProduct)
+		productRouter.POST("/update", controller.UpdateProduct)
+		productRouter.POST("/delete", controller.DeleteProduct)
 	}
 	return router
 }

@@ -20,6 +20,7 @@ import (
 type Product struct {
 	ID          uint      `json:"id" gorm:"primaryKey"`
 	Code        string    `json:"code" gorm:"type:varchar(100)"`
+	Category    string    `json:"category" gorm:"type:varchar(100)"`
 	Name        string    `json:"name" gorm:"type:varchar(255); not null"`
 	Description string    `json:"description" gorm:"type:varchar(255)"` // unique??
 	Price       uint      `json:"price" gorm:"not null"`

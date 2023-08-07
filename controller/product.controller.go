@@ -9,29 +9,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateProduct(c *gin.Context) {
-	var data model.User
-	if err := c.ShouldBindJSON(&data); err != nil {
-		response.Error(c, http.StatusBadRequest, err.Error())
-		return
-	}
-	if res := util.DB.Create(&data); res.Error != nil {
-		response.Error(c, http.StatusUnprocessableEntity, "Failed to register the account.")
-		return
-	}
-	response.Void(c)
-}
-
 func GetProducts(c *gin.Context) {
-	var data []model.UserBasic
-	if res := util.DB.Find(&[]model.User{}).Scan(&data); res.Error != nil {
+	var data []model.Product
+	if res := util.DB.Find(&[]model.Product{}).Scan(&data); res.Error != nil {
 		response.Error(c, http.StatusBadRequest, res.Error.Error())
 		return
 	}
 	response.OK(c, data)
 }
 
-func FindProduct(c *gin.Context) {
+func FindProductById(c *gin.Context) {
 	var data model.UserBasic
 	c.ShouldBindJSON(&data)
 	if res := util.DB.First(&model.User{}, "id = ?", data.ID).Scan(&data); res.Error != nil {
@@ -39,6 +26,30 @@ func FindProduct(c *gin.Context) {
 		return
 	}
 	response.OK(c, data)
+}
+
+func FindProductByItsCategory(c *gin.Context) {
+	var req model.Product
+	var data []model.Product
+	c.ShouldBindJSON(&req)
+	if res := util.DB.First("category = ?", "Foods").Scan(&data); res.Error != nil {
+		response.Error(c, http.StatusNotFound, "Data not found!")
+		return
+	}
+	response.OK(c, req)
+}
+
+func CreateProduct(c *gin.Context) {
+	var req model.Product
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	if res := util.DB.Create(&req); res.Error != nil {
+		response.Error(c, http.StatusBadRequest, "Failed to create the product.")
+		return
+	}
+	response.Void(c)
 }
 
 func UpdateProduct(c *gin.Context) {
