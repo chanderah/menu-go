@@ -30,9 +30,11 @@ func serve() {
 	router.GET("/", func(c *gin.Context) {
 		response.OK(c, "Welcome!")
 	})
-	router.GET("/kill", func(c *gin.Context) {
+	router.GET("/app/kill", func(c *gin.Context) {
 		log.Println("Shutting down...")
-		srv.Shutdown(context.Background())
+		if err := srv.Shutdown(context.Background()); err != nil {
+			log.Println("Server is already closed.")
+		}
 	})
 
 	if err := srv.ListenAndServe(); err != nil {
