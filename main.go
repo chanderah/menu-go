@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/chanderah/menu-go/controller"
 	"github.com/chanderah/menu-go/middleware"
@@ -17,8 +18,8 @@ func main() {
 }
 
 func serve() {
-	// util.GetConnectionMySql()
-	util.GetConnectionPostgres()
+	util.GetConnectionMySql()
+	// util.GetConnectionPostgres()
 
 	port := "3001"
 	router := generateRoute()
@@ -27,8 +28,13 @@ func serve() {
 		Handler: router,
 	}
 
+	log.Println(os.Getpid())
+
 	router.GET("/", func(c *gin.Context) {
 		response.OK(c, "Welcome!")
+	})
+	router.GET("/app/info", func(c *gin.Context) {
+		log.Println(os.Getpid())
 	})
 	router.GET("/app/kill", func(c *gin.Context) {
 		log.Println("Shutting down...")
