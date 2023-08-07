@@ -68,7 +68,7 @@ func generateRoute() *gin.Engine {
 		productRouter := apiRouter.Group("/product")
 		productRouter.POST("/", controller.GetProducts)
 		productRouter.POST("/findById", controller.FindProductById)
-		productRouter.POST("/findByCategory", controller.FindProductByItsCategory)
+		productRouter.POST("/findByCategory", controller.FindProductByCategory)
 
 		productRouter.POST("/create", controller.CreateProduct)
 		productRouter.POST("/update", controller.UpdateProduct)

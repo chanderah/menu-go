@@ -28,11 +28,11 @@ func FindProductById(c *gin.Context) {
 	response.OK(c, data)
 }
 
-func FindProductByItsCategory(c *gin.Context) {
+func FindProductByCategory(c *gin.Context) {
 	var req model.Product
 	var data []model.Product
 	c.ShouldBindJSON(&req)
-	if res := util.DB.First("category = ?", "Foods").Scan(&data); res.Error != nil {
+	if res := util.DB.Where(&model.Product{Category: req.Category}).Find(&[]model.Product{}).Scan(&data); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
