@@ -17,8 +17,8 @@ func main() {
 }
 
 func serve() {
-	util.GetConnectionMySql()
-	// util.GetConnectionPostgres()
+	// util.GetConnectionMySql()
+	util.GetConnectionPostgres()
 
 	port := "3001"
 	router := route()
