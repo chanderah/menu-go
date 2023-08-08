@@ -2,12 +2,12 @@
   "host": "ftp.chandrasa.fun",
   "username": "chandra5",
   "password": "dhearbiznmd",
-  "remotePath": "",
+  "remotePath": "/public_html/go",
   "protocol": "ftp",
   "port": 21,
   "fileNameEncoding": "utf8",
   "autoUpload": false,
-  "autoDelete": false,
+  "autoDelete": true,
   "autoDownload": false,
   "ignore": [".git", "/.vscode", "gin-bin", "go.sum"]
 }

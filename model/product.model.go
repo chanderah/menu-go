@@ -33,28 +33,12 @@ type Product struct {
 	// CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 }
 
-// type ProductBasic struct {
-// 	ID        uint      `json:"id"`
-// 	Role      string    `json:"role"`
-// 	Username  string    `json:"username"`
-// 	Name      string    `json:"name"`
-// 	Email     string    `json:"email"`
-// 	CreatedAt time.Time `json:"created_at"`
-// }
+type ProductId struct {
+	ID uint `json:"id" gorm:"binding:required"`
+}
 
-// CREATE TABLE tb_user (
-//     id SERIAL PRIMARY KEY,
-//     username TEXT,
-//     password TEXT,
-//     name TEXT,
-//     role TEXT,
-//     created_at TIMESTAMP DEFAULT NOW()
-// );
-
-// type User struct {
-// 	ID uint `gorm:"primary_key"`
-// 	Name string `gorm:"type:varchar(255);not null"`
-// 	Email string `gorm:"uniqueIndex;not null"`
-// 	CreatedAt time.Time
-// 	UpdatedAt time.Time
-// }
+type CreateProduct struct {
+	Name        string `json:"name" gorm:"binding:required"`
+	Price       uint   `json:"price" gorm:"binding:required"`
+	UserCreated uint   `json:"userCreated" gorm:"binding:required"`
+}

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"reflect"
 
@@ -17,12 +18,16 @@ func TypeOf(data interface{}) string {
 func IsEmpty(object interface{}) bool {
 	if object == nil {
 		return true
-	} else if object == "" {
-		return true
-	} else if object == false {
+	}
+	if object == "" {
 		return true
 	}
-
+	if object == false {
+		return true
+	}
+	if fmt.Sprintf("%v", object) == "0" {
+		return true
+	}
 	if reflect.ValueOf(object).Kind() == reflect.Struct {
 		empty := reflect.New(reflect.TypeOf(object)).Elem().Interface()
 		if reflect.DeepEqual(object, empty) {

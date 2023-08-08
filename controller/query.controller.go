@@ -14,8 +14,10 @@ func RunQuery(c *gin.Context) {
 	var req = Query{}
 	c.ShouldBindJSON(&req)
 
-	result := map[string]interface{}{}
-	util.DB.Raw(req.Query).Scan(&result)
-
+	result := []map[string]interface{}{}
+	if err := util.DB.Raw(req.Query).Scan(&result); err != nil {
+		response.Error(c, 400, err.Error.Error())
+		return
+	}
 	response.OK(c, result)
 }

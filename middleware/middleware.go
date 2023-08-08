@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"bytes"
-	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,6 +23,6 @@ func GinLoggingMiddleware(c *gin.Context) {
 	c.Next()
 
 	if c.Writer.Status() >= 400 {
-		fmt.Println("RESPONSE: " + blw.buf.String())
+		log.Println("RESPONSE: " + blw.buf.String())
 	}
 }

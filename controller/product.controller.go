@@ -21,7 +21,12 @@ func GetProducts(c *gin.Context) {
 func FindProductById(c *gin.Context) {
 	var data model.Product
 	c.ShouldBindJSON(&data)
-	if res := util.DB.First(&model.Product{ID: data.ID}).Scan(&data); res.Error != nil {
+
+	if util.IsEmpty(data.ID) {
+		response.Error(c, 400, "ID can't be null!")
+		return
+	}
+	if res := util.DB.First(&data); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
@@ -32,13 +37,16 @@ func FindProductByCategory(c *gin.Context) {
 	var req model.Product
 	c.ShouldBindJSON(&req)
 
+	if util.IsEmpty(req.Category) {
+		response.Error(c, 400, "Category can't be null!")
+		return
+	}
 	data := []model.Product{}
 	if res := util.DB.Where(&model.Product{Category: req.Category}).Find(&data); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
 	response.OK(c, data)
-
 }
 
 func CreateProduct(c *gin.Context) {
