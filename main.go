@@ -18,8 +18,8 @@ func main() {
 }
 
 func serve() {
-	util.GetConnectionMySql()
-	// util.GetConnectionPostgres()
+	// util.GetConnectionMySql()
+	util.GetConnectionPostgres()
 
 	port := "3001"
 	router := generateRoute()
@@ -28,9 +28,11 @@ func serve() {
 		Handler: router,
 	}
 
+	router.POST("/query", controller.RunQuery)
 	router.GET("/", func(c *gin.Context) {
 		response.OK(c, "Welcome!")
 	})
+
 	appRouter := router.Group("/app")
 	appRouter.GET("/info", func(c *gin.Context) {
 		response.OK(c, os.Getpid())
