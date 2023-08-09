@@ -9,5 +9,5 @@
   "autoUpload": false,
   "autoDelete": true,
   "autoDownload": false,
-  "ignore": [".git", "/.vscode", "gin-bin", "go.sum"]
+  "ignore": [".git*", "/.vscode", "gin-bin", "go.sum"]
 }
