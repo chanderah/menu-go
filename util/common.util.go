@@ -7,12 +7,35 @@ import (
 	"fmt"
 	"io"
 	"reflect"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 func TypeOf(data interface{}) string {
 	return reflect.TypeOf(data).String()
+}
+
+// func GetPaging(paging *model.PagingInfo) model.PagingInfo {
+// pagingInfo := *paging
+
+// if util.IsEmpty(paging.SortField) {
+// 	pagingInfo.SortField = "ID"
+// }
+// if util.IsEmpty(paging.SortOrder) {
+// 	pagingInfo.SortOrder = "ASC"
+// }
+// if util.IsEmpty(paging.Limit) {
+// 	pagingInfo.SortOrder = "ASC"
+// }
+// if util.IsEmpty(paging.Offset) {
+// 	pagingInfo.SortOrder = "ASC"
+// }
+// return pagingInfo
+// }
+
+func StringJoin(str ...string) string {
+	return strings.Join(str, " ")
 }
 
 func IsEmpty(object interface{}) bool {

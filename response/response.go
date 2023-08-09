@@ -1,6 +1,8 @@
 package response
 
 import (
+	"net/http"
+
 	"github.com/chanderah/menu-go/util"
 	"github.com/gin-gonic/gin"
 )
@@ -27,14 +29,15 @@ func OK(c *gin.Context, data interface{}) {
 }
 
 func Error(c *gin.Context, status int, message string) {
-	if util.IsEmpty(status) {
-		status = 500
-	} else if util.IsEmpty(message) {
-		message = "Something went wrong."
-	}
-
 	c.JSON(status, Response{
 		Status:  status,
 		Message: message,
 	})
+}
+
+func AppError(c *gin.Context, message string) {
+	if util.IsEmpty(message) {
+		message = "Something went wrong."
+	}
+	Error(c, http.StatusInternalServerError, message)
 }

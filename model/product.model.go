@@ -18,27 +18,17 @@ import (
 // options?: ProductOptions[];
 
 type Product struct {
-	Id          uint      `json:"id" gorm:"primaryKey"`
-	Code        string    `json:"code" gorm:"type:varchar(100)"`
-	Category    string    `json:"category" gorm:"type:varchar(100)"`
-	Name        string    `json:"name" gorm:"type:varchar(255); not null"`
-	Description string    `json:"description" gorm:"type:varchar(255)"` // unique??
-	Price       uint      `json:"price" gorm:"not null"`
-	Quantity    uint      `json:"quantity"`
-	Status      string    `json:"status" gorm:"type:varchar(100)"`
-	Image       string    `json:"image"`
-	UserCreated uint      `json:"userCreated" gorm:"not null"`
+	ID          uint      `json:"id" gorm:"primaryKey"`
+	Code        string    `json:"code,omitempty" gorm:"type:varchar(100)"`
+	Category    string    `json:"category,omitempty" gorm:"type:varchar(100)"`
+	Name        string    `json:"name" gorm:"type:varchar(255); not null" binding:"required" `
+	Description string    `json:"description,omitempty" gorm:"type:varchar(255)"`
+	Price       uint      `json:"price" gorm:"not null" binding:"required"`
+	Quantity    uint      `json:"quantity,omitempty"`
+	Status      string    `json:"status,omitempty" gorm:"type:varchar(100)"`
+	Image       string    `json:"image,omitempty"`
+	UserCreated uint      `json:"userCreated,omitempty" gorm:"not null" binding:"required" `
 	UpdatedAt   time.Time `json:"updatedAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
 	CreatedAt   time.Time `json:"createdAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"`
 	// CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
-}
-
-type ProductId struct {
-	Id uint `json:"id" gorm:"binding:required"`
-}
-
-type CreateProduct struct {
-	Name        string `json:"name" gorm:"binding:required"`
-	Price       uint   `json:"price" gorm:"binding:required"`
-	UserCreated uint   `json:"userCreated" gorm:"binding:required"`
 }

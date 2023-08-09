@@ -5,23 +5,21 @@ import (
 )
 
 type User struct {
-	Id        uint      `json:"id" gorm:"primaryKey"`
-	Role      string    `json:"role" gorm:"type:varchar(255)"`
-	Username  string    `json:"username" gorm:"unique; type:varchar(100); not null"`
-	Password  string    `json:"password" gorm:"not null"`
-	Name      string    `json:"name" gorm:"type:varchar(255)"`
-	Email     string    `json:"email" gorm:"type:varchar(255)"` // unique??
+	ID        uint      `json:"id" gorm:"primaryKey"`
+	Role      string    `json:"role" gorm:"type:varchar(255) NOT NULL DEFAULT 'user'"`
+	Username  string    `json:"username" gorm:"unique; type:varchar(100); not null" binding:"required"`
+	Password  string    `json:"password" gorm:"not null" binding:"required"`
+	Name      string    `json:"name,omitempty" gorm:"type:varchar(255)"`
+	Email     string    `json:"email,omitempty" gorm:"type:varchar(255)"`
 	Token     string    `json:"token" gorm:"not null"`
 	CreatedAt time.Time `json:"createdAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"`
-	// UpdatedAt  time.Time `gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
-	// CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 }
 
 type UserBasic struct {
-	Id        uint      `json:"id"`
-	Role      string    `json:"role"`
+	ID        uint      `json:"id"`
+	Role      string    `json:"role,omitempty"`
 	Username  string    `json:"username"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
+	Name      string    `json:"name,omitempty"`
+	Email     string    `json:"email,omitempty"`
 	CreatedAt time.Time `json:"createdAt"`
 }

@@ -5,6 +5,6 @@ type PagingInfo struct {
 	Offset    int    `json:"offset,omitempty"`
 	Filter    string `json:"filter,omitempty"`
 	SortField string `json:"sortField,omitempty"`
-	SortOrder int    `json:"sortOrder,omitempty"`
+	SortOrder string `json:"sortOrder,omitempty"`
 	RowCount  int    `json:"rowCount,omitempty"`
 }

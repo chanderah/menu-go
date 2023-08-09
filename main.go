@@ -27,21 +27,23 @@ func serve() {
 		Addr:    ":" + port,
 		Handler: router,
 	}
+	{
+		appRouter := router.Group("/app")
+		appRouter.GET("/info", func(c *gin.Context) {
+			response.OK(c, map[string]interface{}{
+				"pid": os.Getpid(),
+			})
+		})
+		appRouter.GET("/kill", func(c *gin.Context) {
+			log.Println("Shutting down...")
+			if err := srv.Shutdown(context.Background()); err != nil {
+				log.Println("Stopping server failed.\n", err)
+			}
+		})
+	}
 
 	router.GET("/", func(c *gin.Context) {
 		response.OK(c, "Welcome!")
-	})
-	appRouter := router.Group("/app")
-	appRouter.GET("/info", func(c *gin.Context) {
-		response.OK(c, map[string]interface{}{
-			"pid": os.Getpid(),
-		})
-	})
-	appRouter.GET("/kill", func(c *gin.Context) {
-		log.Println("Shutting down...")
-		if err := srv.Shutdown(context.Background()); err != nil {
-			log.Println("Stopping server failed.\n", err)
-		}
 	})
 
 	if err := srv.ListenAndServe(); err != nil {
