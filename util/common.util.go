@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/chanderah/menu-go/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,23 +17,17 @@ func TypeOf(data interface{}) string {
 	return reflect.TypeOf(data).String()
 }
 
-// func GetPaging(paging *model.PagingInfo) model.PagingInfo {
-// pagingInfo := *paging
-
-// if util.IsEmpty(paging.SortField) {
-// 	pagingInfo.SortField = "ID"
-// }
-// if util.IsEmpty(paging.SortOrder) {
-// 	pagingInfo.SortOrder = "ASC"
-// }
-// if util.IsEmpty(paging.Limit) {
-// 	pagingInfo.SortOrder = "ASC"
-// }
-// if util.IsEmpty(paging.Offset) {
-// 	pagingInfo.SortOrder = "ASC"
-// }
-// return pagingInfo
-// }
+func GetPaging(paging *model.PagingInfo) {
+	if IsEmpty(paging.Limit) {
+		paging.Limit = 10
+	}
+	if IsEmpty(paging.SortField) {
+		paging.SortField = "ID"
+	}
+	if IsEmpty(paging.SortOrder) {
+		paging.SortOrder = "ASC"
+	}
+}
 
 func StringJoin(str ...string) string {
 	return strings.Join(str, " ")

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/chanderah/menu-go/model"
@@ -26,11 +27,13 @@ type ProductsPaging struct {
 func GetProducts(c *gin.Context) {
 	paging := model.PagingInfo{}
 	c.ShouldBindJSON(&paging)
+	util.GetPaging(&paging)
 
-	// paging = util.GetPaging(&paging)
+	where := "name LIKE @v OR code LIKE @v OR CAST(price AS CHAR) LIKE @v"
+	value := sql.Named("v", "%"+paging.Filter+"%")
 
 	data := []model.Product{}
-	res := util.DB.Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
+	res := util.DB.Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).Find(&data, where, value)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
