@@ -2,6 +2,7 @@ package controller
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 
 	"github.com/chanderah/menu-go/model"
@@ -32,12 +33,15 @@ func GetProducts(c *gin.Context) {
 	where := "name LIKE @v OR code LIKE @v OR CAST(price AS CHAR) LIKE @v"
 	value := sql.Named("v", "%"+paging.Filter+"%")
 
+	rowCount := new(int64)
 	data := []model.Product{}
-	res := util.DB.Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).Find(&data, where, value)
+	res := util.DB.Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).Find(&data, where, value).Count(rowCount)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
 	}
+
+	log.Println(rowCount)
 	response.OK(c, data)
 }
 
