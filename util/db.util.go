@@ -19,6 +19,7 @@ var DB *gorm.DB
 func export(db *gorm.DB) {
 	db.AutoMigrate(&model.User{})
 	db.AutoMigrate(&model.Product{})
+	db.AutoMigrate(&model.Category{})
 	DB = db
 }
 

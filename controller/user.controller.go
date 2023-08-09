@@ -53,7 +53,7 @@ func GetUsers(c *gin.Context) {
 func FindUserById(c *gin.Context) {
 	var data model.UserBasic
 	c.ShouldBindJSON(&data)
-	if res := util.DB.First(&model.User{}, "id = ?", data.ID).Scan(&data); res.Error != nil {
+	if res := util.DB.First(&model.User{}, "id = ?", data.Id).Scan(&data); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
@@ -63,7 +63,7 @@ func FindUserById(c *gin.Context) {
 func FindUserByUsername(c *gin.Context) {
 	var data model.UserBasic
 	c.ShouldBindJSON(&data)
-	if res := util.DB.First(&model.User{}, "id = ?", data.ID).Scan(&data); res.Error != nil {
+	if res := util.DB.First(&model.User{}, "id = ?", data.Id).Scan(&data); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
@@ -76,7 +76,7 @@ func UpdateUser(c *gin.Context) {
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	if res := util.DB.First(&data, "id = ?", input.ID); res.Error != nil {
+	if res := util.DB.First(&data, "id = ?", input.Id); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
@@ -91,7 +91,7 @@ func DeleteUser(c *gin.Context) {
 	var data model.User
 
 	c.ShouldBindJSON(&data)
-	if res := util.DB.First(&data, "id = ?", data.ID); res.Error != nil {
+	if res := util.DB.First(&data, "id = ?", data.Id); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}

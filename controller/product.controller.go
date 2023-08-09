@@ -22,8 +22,8 @@ func FindProductById(c *gin.Context) {
 	var data model.Product
 	c.ShouldBindJSON(&data)
 
-	if util.IsEmpty(data.ID) {
-		response.Error(c, 400, "ID can't be null!")
+	if util.IsEmpty(data.Id) {
+		response.Error(c, 400, "Id can't be null!")
 		return
 	}
 	if res := util.DB.First(&data); res.Error != nil {
@@ -68,7 +68,7 @@ func UpdateProduct(c *gin.Context) {
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	if res := util.DB.First(&data, "id = ?", input.ID); res.Error != nil {
+	if res := util.DB.First(&data, "id = ?", input.Id); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
@@ -83,7 +83,7 @@ func DeleteProduct(c *gin.Context) {
 	var data model.Product
 
 	c.ShouldBindJSON(&data)
-	if res := util.DB.First(&data, "id = ?", data.ID); res.Error != nil {
+	if res := util.DB.First(&data, "id = ?", data.Id); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}

@@ -18,7 +18,7 @@ import (
 // options?: ProductOptions[];
 
 type Product struct {
-	ID          uint      `json:"id" gorm:"primaryKey"`
+	Id          uint      `json:"id" gorm:"primaryKey"`
 	Code        string    `json:"code" gorm:"type:varchar(100)"`
 	Category    string    `json:"category" gorm:"type:varchar(100)"`
 	Name        string    `json:"name" gorm:"type:varchar(255); not null"`
@@ -28,13 +28,13 @@ type Product struct {
 	Status      string    `json:"status" gorm:"type:varchar(100)"`
 	Image       string    `json:"image"`
 	UserCreated uint      `json:"userCreated" gorm:"not null"`
+	UpdatedAt   time.Time `json:"updatedAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
 	CreatedAt   time.Time `json:"createdAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"`
-	// UpdatedAt  time.Time `gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
 	// CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 }
 
 type ProductId struct {
-	ID uint `json:"id" gorm:"binding:required"`
+	Id uint `json:"id" gorm:"binding:required"`
 }
 
 type CreateProduct struct {
