@@ -23,6 +23,10 @@ func export(db *gorm.DB) {
 	DB = db
 }
 
+func GenerateQuery() {
+
+}
+
 func GetConnectionMySql() {
 	err := godotenv.Load()
 	if err != nil {

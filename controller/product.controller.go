@@ -15,16 +15,10 @@ type ProductsPaging struct {
 	model.PagingInfo
 }
 
-// func GetProducts(c *gin.Context) {
-// 	var data = []model.Product{}
-// 	if res := util.DB.Find(&data); res.Error != nil {
-// 		response.Error(c, http.StatusInternalServerError, res.Error.Error())
-// 		return
-// 	}
-// 	response.OK(c, data)
-// }
-
 func GetProducts(c *gin.Context) {
+	var rowCount int64
+	data := []model.Product{}
+
 	paging := model.PagingInfo{}
 	c.ShouldBindJSON(&paging)
 	util.GetPaging(&paging)
@@ -32,14 +26,36 @@ func GetProducts(c *gin.Context) {
 	where := "name LIKE @v OR code LIKE @v OR CAST(price AS CHAR) LIKE @v"
 	value := sql.Named("v", "%"+paging.Filter+"%")
 
-	var rowCount int64
-	data := []model.Product{}
 	res := util.DB.Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).Find(&data, where, value).Count(&rowCount)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
 	}
-	response.OK(c, data)
+	response.Paging(c, data, rowCount)
+}
+
+func FindProductByCategory(c *gin.Context) {
+	var rowCount int64
+	data := []model.Product{}
+
+	paging := model.PagingInfo{}
+	c.ShouldBindJSON(&paging)
+	util.GetPaging(&paging)
+
+	where := "@fc = @fv AND name LIKE @v OR code LIKE @v OR CAST(price AS CHAR) LIKE @v"
+	// value := sql.Named("v", "%"+paging.Filter+"%")
+	value := []interface{}{
+		sql.Named("fc", paging.FilterField.Column),
+		sql.Named("fv", paging.FilterField.Value),
+		sql.Named("v", "%"+paging.Filter+"%"),
+	}
+
+	res := util.DB.Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).Find(&data, where, value).Count(&rowCount)
+	if res.Error != nil {
+		response.AppError(c, res.Error.Error())
+		return
+	}
+	response.Paging(c, data, rowCount)
 }
 
 func FindProductById(c *gin.Context) {
@@ -48,18 +64,6 @@ func FindProductById(c *gin.Context) {
 
 	if res := util.DB.First(&data, "id = ?", data.ID); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
-		return
-	}
-	response.OK(c, data)
-}
-
-func FindProductByCategory(c *gin.Context) {
-	var req model.Product
-	c.ShouldBindJSON(&req)
-
-	data := []model.Product{}
-	if res := util.DB.Find(&data, "category = ?", req.Category); res.Error != nil {
-		response.AppError(c, res.Error.Error())
 		return
 	}
 	response.OK(c, data)

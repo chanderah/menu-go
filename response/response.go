@@ -8,9 +8,10 @@ import (
 )
 
 type Response struct {
-	Status  int         `json:"status"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data,omitempty"`
+	Status   int         `json:"status"`
+	Message  string      `json:"message"`
+	RowCount int64       `json:"rowCount,omitempty"`
+	Data     interface{} `json:"data,omitempty"`
 }
 
 func Void(c *gin.Context) {
@@ -25,6 +26,15 @@ func OK(c *gin.Context, data interface{}) {
 		Status:  200,
 		Message: "success",
 		Data:    data,
+	})
+}
+
+func Paging(c *gin.Context, data interface{}, rowCount int64) {
+	c.JSON(200, Response{
+		Status:   200,
+		Message:  "success",
+		Data:     data,
+		RowCount: rowCount,
 	})
 }
 
