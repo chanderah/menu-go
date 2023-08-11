@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/chanderah/menu-go/controller"
 	"github.com/chanderah/menu-go/middleware"
@@ -34,7 +35,12 @@ func serve() {
 				"pid": os.Getpid(),
 			})
 		})
-		appRouter.GET("/kill", func(c *gin.Context) {
+		appRouter.GET("/kill/:pid", func(c *gin.Context) {
+			pid, _ := strconv.Atoi(c.Param("pid"))
+			if pid != os.Getpid() {
+				response.Error(c, 400, "Invalid!")
+				return
+			}
 			log.Println("Shutting down...")
 			if err := srv.Shutdown(context.Background()); err != nil {
 				log.Println("Stopping server failed.\n", err)
@@ -60,6 +66,7 @@ func generateRoute() *gin.Engine {
 		userRouter := apiRouter.Group("/user")
 		userRouter.POST("/", controller.GetUsers)
 		userRouter.POST("/findById", controller.FindUserById)
+		userRouter.POST("/findByCategory", controller.FindProductByCategory)
 		userRouter.POST("/findByUsername", controller.FindUserByUsername)
 
 		userRouter.POST("/register", controller.RegisterUser)

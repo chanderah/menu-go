@@ -27,6 +27,12 @@ func GetPaging(paging *model.PagingInfo) {
 	if IsEmpty(paging.SortOrder) {
 		paging.SortOrder = "ASC"
 	}
+	if IsEmpty(paging.Field.Column) {
+		paging.Field.Column = "1"
+	}
+	if IsEmpty(paging.Field.Value) {
+		paging.Field.Value = "1"
+	}
 }
 
 func StringJoin(str ...string) string {

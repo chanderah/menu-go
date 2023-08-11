@@ -2,6 +2,7 @@ package controller
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"github.com/chanderah/menu-go/model"
@@ -42,15 +43,9 @@ func FindProductByCategory(c *gin.Context) {
 	c.ShouldBindJSON(&paging)
 	util.GetPaging(&paging)
 
-	where := "@fc = @fv AND name LIKE @v OR code LIKE @v OR CAST(price AS CHAR) LIKE @v"
-	// value := sql.Named("v", "%"+paging.Filter+"%")
-	value := []interface{}{
-		sql.Named("fc", paging.FilterField.Column),
-		sql.Named("fv", paging.FilterField.Value),
-		sql.Named("v", "%"+paging.Filter+"%"),
-	}
-
-	res := util.DB.Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).Find(&data, where, value).Count(&rowCount)
+	where := fmt.Sprintf("%s = '%s' AND name LIKE '%%%[3]s%%' OR code LIKE '%%%[3]s%%' OR CAST(price AS CHAR) LIKE '%%%[3]s%%'", paging.Field.Column, paging.Field.Value, paging.Filter)
+	page := util.DB.Limit(paging.Limit).Offset(paging.Offset)
+	res := page.Order(paging.SortField+" "+paging.SortOrder).Find(&data, where).Count(&rowCount)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
