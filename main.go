@@ -16,6 +16,8 @@ import (
 
 func main() {
 	serve()
+	// controller.SendMail("Http listen for http://go.chandrasa.fun started!", "aaa")
+	// controller.SendMail("Http listen for http://go.chandrasa.fun started!", fmt.Sprintf("Your pid is: %d", os.Getpid()))
 }
 
 func serve() {
@@ -30,6 +32,7 @@ func serve() {
 	}
 	{
 		appRouter := router.Group("/app")
+		appRouter.POST("/mail", controller.CallSendMail)
 		appRouter.GET("/info", func(c *gin.Context) {
 			response.OK(c, map[string]interface{}{
 				"pid": os.Getpid(),
