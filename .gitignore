@@ -3,6 +3,7 @@
 
 # Go Files
 # go.mod
+menu-go
 go.sum
 gin-bin
 
