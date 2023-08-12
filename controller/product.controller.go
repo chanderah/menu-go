@@ -11,11 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ProductsPaging struct {
-	model.Product
-	model.PagingInfo
-}
-
 func GetProducts(c *gin.Context) {
 	var rowCount int64
 	data := []model.Product{}
@@ -43,7 +38,7 @@ func FindProductByCategory(c *gin.Context) {
 	c.ShouldBindJSON(&paging)
 	util.GetPaging(&paging)
 
-	where := fmt.Sprintf("%s = '%s' AND name LIKE '%%%[3]s%%' OR code LIKE '%%%[3]s%%' OR CAST(price AS CHAR) LIKE '%%%[3]s%%'", paging.Field.Column, paging.Field.Value, paging.Filter)
+	where := fmt.Sprintf("categoryId = %d AND name LIKE '%%%[2]s%%' OR code LIKE '%%%[2]s%%' OR CAST(price AS CHAR) LIKE '%%%[2]s%%'", paging.Field.Value, paging.Filter)
 	page := util.DB.Limit(paging.Limit).Offset(paging.Offset)
 	res := page.Order(paging.SortField+" "+paging.SortOrder).Find(&data, where).Count(&rowCount)
 	if res.Error != nil {
@@ -96,14 +91,14 @@ func UpdateProduct(c *gin.Context) {
 }
 
 func DeleteProduct(c *gin.Context) {
-	var data model.Product
+	var req model.Product
 
-	c.ShouldBindJSON(&data)
-	if res := util.DB.First(&data, "id = ?", data.ID); res.Error != nil {
+	c.ShouldBindJSON(&req)
+	if res := util.DB.First(&req, "id = ?", req.ID); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
-	if res := util.DB.Delete(&data); res.Error != nil {
+	if res := util.DB.Delete(&req); res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
 	}

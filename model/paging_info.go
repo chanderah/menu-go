@@ -7,10 +7,10 @@ type PagingInfo struct {
 	Offset    int    `json:"offset,omitempty"`
 	SortField string `json:"sortField,omitempty"`
 	SortOrder string `json:"sortOrder,omitempty"`
-	CountRows int64  `json:"countRows,omitempty"`
+	// Page      int    `json:"page,omitempty"`
 }
 
 type Field struct {
-	Column string `json:"column,omitempty"`
-	Value  string `json:"value,omitempty"`
+	Column string      `json:"column,omitempty"`
+	Value  interface{} `json:"value,omitempty"`
 }

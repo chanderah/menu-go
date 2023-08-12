@@ -38,7 +38,7 @@ func serve() {
 		appRouter.GET("/kill/:pid", func(c *gin.Context) {
 			pid, _ := strconv.Atoi(c.Param("pid"))
 			if pid != os.Getpid() {
-				response.Error(c, 400, "Invalid!")
+				response.Error(c, 400, "invalid!")
 				return
 			}
 			log.Println("Shutting down...")
@@ -71,16 +71,22 @@ func generateRoute() *gin.Engine {
 
 		userRouter.POST("/register", controller.RegisterUser)
 		userRouter.POST("/login", controller.LoginUser)
-
 		userRouter.POST("/update", controller.UpdateUser)
 		userRouter.POST("/delete", controller.DeleteUser)
+	}
+	{
+		categoryRouter := apiRouter.Group("/category")
+		categoryRouter.POST("/", controller.GetCategories)
+		categoryRouter.POST("/findById", controller.FindCategoryById)
+		categoryRouter.POST("/create", controller.CreateCategory)
+		categoryRouter.POST("/update", controller.UpdateCategory)
+		categoryRouter.POST("/delete", controller.DeleteCategory)
 	}
 	{
 		productRouter := apiRouter.Group("/product")
 		productRouter.POST("/", controller.GetProducts)
 		productRouter.POST("/findById", controller.FindProductById)
 		productRouter.POST("/findByCategory", controller.FindProductByCategory)
-
 		productRouter.POST("/create", controller.CreateProduct)
 		productRouter.POST("/update", controller.UpdateProduct)
 		productRouter.POST("/delete", controller.DeleteProduct)
