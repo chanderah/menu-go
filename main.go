@@ -32,7 +32,7 @@ func serve() {
 	}
 	{
 		appRouter := router.Group("/app")
-		appRouter.POST("/mail", controller.CallSendMail)
+		// appRouter.POST("/mail", controller.CallSendMail)
 		appRouter.GET("/info", func(c *gin.Context) {
 			response.OK(c, map[string]interface{}{
 				"pid": os.Getpid(),
