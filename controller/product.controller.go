@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -19,10 +18,11 @@ func GetProducts(c *gin.Context) {
 	c.ShouldBindJSON(&paging)
 	util.GetPaging(&paging)
 
-	where := "name LIKE @v OR code LIKE @v OR CAST(price AS CHAR) LIKE @v"
-	value := sql.Named("v", "%"+paging.Filter+"%")
-
-	res := util.DB.Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).Find(&data, where, value).Count(&rowCount)
+	where := "1=1"
+	if !util.IsEmpty(paging.Filter) {
+		where = fmt.Sprintf("name LIKE '%%%[1]s%%' OR code LIKE '%%%[1]s%%' OR CAST(price AS CHAR) LIKE '%%%[1]s%%'", paging.Filter)
+	}
+	res := util.DB.Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).Find(&data, where).Count(&rowCount)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return

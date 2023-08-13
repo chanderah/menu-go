@@ -17,7 +17,7 @@ func (w bodyLogWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
-func GinLoggingMiddleware(c *gin.Context) {
+func LoggingMiddleware(c *gin.Context) {
 	blw := &bodyLogWriter{ResponseWriter: c.Writer, buf: &bytes.Buffer{}}
 	c.Writer = blw
 	c.Next()
@@ -25,4 +25,16 @@ func GinLoggingMiddleware(c *gin.Context) {
 	if c.Writer.Status() >= 400 {
 		log.Println("RESPONSE: " + blw.buf.String())
 	}
+}
+
+func CorsMiddleware(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Credentials", "true")
+	c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+	if c.Request.Method == "OPTIONS" {
+		c.AbortWithStatus(204)
+		return
+	}
+	c.Next()
 }

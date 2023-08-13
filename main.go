@@ -62,12 +62,15 @@ func serve() {
 
 func generateRoute() *gin.Engine {
 	router := gin.New()
+	// router.RedirectTrailingSlash = true
+	router.Use(middleware.CorsMiddleware)
+	// router.Use(middleware.LoggingMiddleware)
+
 	/* MAIN API ROUTE */
 	apiRouter := router.Group("/api")
-	apiRouter.Use(middleware.GinLoggingMiddleware)
 	{
 		userRouter := apiRouter.Group("/user")
-		userRouter.POST("/", controller.GetUsers)
+		userRouter.POST("/findAll", controller.GetUsers)
 		userRouter.POST("/findById", controller.FindUserById)
 		userRouter.POST("/findByCategory", controller.FindProductByCategory)
 		userRouter.POST("/findByUsername", controller.FindUserByUsername)
@@ -79,7 +82,7 @@ func generateRoute() *gin.Engine {
 	}
 	{
 		categoryRouter := apiRouter.Group("/category")
-		categoryRouter.POST("/", controller.GetCategories)
+		categoryRouter.POST("/findAll", controller.GetCategories)
 		categoryRouter.POST("/findById", controller.FindCategoryById)
 		categoryRouter.POST("/create", controller.CreateCategory)
 		categoryRouter.POST("/update", controller.UpdateCategory)
@@ -87,7 +90,7 @@ func generateRoute() *gin.Engine {
 	}
 	{
 		productRouter := apiRouter.Group("/product")
-		productRouter.POST("/", controller.GetProducts)
+		productRouter.POST("/findAll", controller.GetProducts)
 		productRouter.POST("/findById", controller.FindProductById)
 		productRouter.POST("/findByCategory", controller.FindProductByCategory)
 		productRouter.POST("/create", controller.CreateProduct)
