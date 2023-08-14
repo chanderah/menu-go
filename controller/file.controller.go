@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/chanderah/menu-go/model"
 	"github.com/chanderah/menu-go/response"
@@ -31,6 +32,8 @@ func UploadFile(c *gin.Context) {
 		response.Error(c, 400, err.Error())
 		return
 	}
+
+	req.File = strings.Split(req.File, "base64,")[1]
 	decoded, err := util.Decode64(req.File)
 	if err != nil {
 		response.Error(c, 400, err.Error())
