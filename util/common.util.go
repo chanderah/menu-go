@@ -2,10 +2,13 @@ package util
 
 import (
 	"bytes"
+	b64 "encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"log"
+	"os"
 	"reflect"
 	"strings"
 
@@ -35,8 +38,50 @@ func GetPaging(paging *model.PagingInfo) {
 	}
 }
 
+func Encode64(str string) string {
+	return b64.StdEncoding.EncodeToString([]byte(str))
+}
+
+func Decode64(encodedStr string) ([]byte, error) {
+	return b64.StdEncoding.DecodeString(encodedStr)
+}
+
 func StringJoin(str ...string) string {
 	return strings.Join(str, " ")
+}
+
+func DeleteFile(filePath string) {
+	os.Remove(filePath)
+}
+
+func WriteLog(filePath *string, data interface{}) {
+	// filePath := "../log/server.log"
+
+	// _, err := file.WriteString(fmt.Sprint(data))
+	// if err != nil {
+
+	// }
+}
+
+func ReadFile(filePath string) (string, error) {
+	body, err := os.ReadFile(filePath)
+	return string(body), err
+	// if err != nil {
+	// 	log.Println("Failed to read file.", err)
+	// } else {
+	// 	log.Println(string(body))
+	// 	DeleteFile(filePath)
+	// }
+}
+
+func CreateFile(filePath string) error {
+	file, err := os.Create(filePath)
+	if err != nil {
+		log.Println("Failed to create file.", err)
+		return err
+	}
+	fmt.Println(file)
+	return nil
 }
 
 func IsEmpty(object interface{}) bool {
