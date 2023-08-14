@@ -18,6 +18,17 @@ func GetCategories(c *gin.Context) {
 	response.OK(c, &data)
 }
 
+func FindCategoryById(c *gin.Context) {
+	var data = model.Category{}
+	c.ShouldBindJSON(&data)
+
+	if res := util.DB.First(&data, "id = ?", data.ID); res.Error != nil {
+		response.Error(c, http.StatusNotFound, "Data not found!")
+		return
+	}
+	response.OK(c, data)
+}
+
 func CreateCategory(c *gin.Context) {
 	var req model.Category
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -29,17 +40,6 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 	response.Void(c)
-}
-
-func FindCategoryById(c *gin.Context) {
-	var data = model.Category{}
-	c.ShouldBindJSON(&data)
-
-	if res := util.DB.First(&data, "id = ?", data.ID); res.Error != nil {
-		response.Error(c, http.StatusNotFound, "Data not found!")
-		return
-	}
-	response.OK(c, data)
 }
 
 func UpdateCategory(c *gin.Context) {

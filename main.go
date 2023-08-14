@@ -78,7 +78,6 @@ func generateRoute() *gin.Engine {
 		userRouter := apiRouter.Group("/user")
 		userRouter.POST("/findAll", controller.GetUsers)
 		userRouter.POST("/findById", controller.FindUserById)
-		userRouter.POST("/findByCategory", controller.FindProductByCategory)
 		userRouter.POST("/findByUsername", controller.FindUserByUsername)
 
 		userRouter.POST("/register", controller.RegisterUser)
