@@ -53,6 +53,8 @@ func UploadFile(fileDetails *model.FileDetails, file *os.File) (interface{}, err
 		log.Println(err)
 		return nil, err
 	}
+	defer os.Remove(fileDetails.Dest)
+	defer file.Close()
 	defer conn.Quit()
 
 	if err := conn.Stor(fileDetails.Dest, file); err != nil {

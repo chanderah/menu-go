@@ -26,25 +26,20 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 
-	decoded, err := util.Decode64(req.File)
-	if err != nil {
-		response.Error(c, 400, err.Error())
-		return
-	}
-
 	file, err := os.Create(req.Dest)
 	if err != nil {
 		response.Error(c, 400, err.Error())
 		return
 	}
-	defer os.Remove(req.Dest)
-	defer file.Close()
-
+	decoded, err := util.Decode64(req.File)
+	if err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
 	if _, err := file.Write(decoded); err != nil {
 		response.Error(c, 400, err.Error())
 		return
 	}
-
 	if err := file.Sync(); err != nil {
 		response.Error(c, 400, err.Error())
 		return
