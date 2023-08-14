@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/chanderah/menu-go/model"
 	"github.com/jlaffaye/ftp"
 )
 
@@ -46,7 +47,7 @@ func GetFiles() ([]*ftp.Entry, error) {
 	return entries, nil
 }
 
-func UploadFile(dest string, filePath string) (interface{}, error) {
+func UploadFile(fileDetails *model.FileDetails, file *os.File) (interface{}, error) {
 	conn, err := getFtpConnection()
 	if err != nil {
 		log.Println(err)
@@ -54,19 +55,12 @@ func UploadFile(dest string, filePath string) (interface{}, error) {
 	}
 	defer conn.Quit()
 
-	file, err := os.Open(filePath)
-	if err != nil {
+	if err := conn.Stor(fileDetails.Dest, file); err != nil {
 		log.Println(err)
 		return nil, err
 	}
-	file.Close()
-
-	if err := conn.Stor(PATH+dest, file); err != nil {
-		log.Println(err)
-		return nil, err
-	}
-	log.Println("File is uploaded to: " + PATH + dest)
-	return PATH + dest, nil
+	log.Println("File is uploaded to: " + PATH + fileDetails.Dest)
+	return PATH + fileDetails.Dest, nil
 }
 
 func RemoveFile(filePath string) error {
