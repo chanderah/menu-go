@@ -24,7 +24,7 @@ func serve() {
 	util.GetConnectionMySql()
 	// util.GetConnectionPostgres()
 
-	port := "3001"
+	port := "3000"
 	router := generateRoute()
 	srv := &http.Server{
 		Addr:    ":" + port,
@@ -71,15 +71,8 @@ func generateRoute() *gin.Engine {
 	{
 		fileRouter := apiRouter.Group("/file")
 		fileRouter.POST("/findAll", controller.GetFiles)
-		// userRouter.POST("/findAll", controller.GetUsers)
-		// userRouter.POST("/findById", controller.FindUserById)
-		// userRouter.POST("/findByCategory", controller.FindProductByCategory)
-		// userRouter.POST("/findByUsername", controller.FindUserByUsername)
-
-		// userRouter.POST("/register", controller.RegisterUser)
-		// userRouter.POST("/login", controller.LoginUser)
-		// userRouter.POST("/update", controller.UpdateUser)
-		// userRouter.POST("/delete", controller.DeleteUser)
+		fileRouter.POST("/upload", controller.UploadFile)
+		fileRouter.POST("/delete", controller.DeleteFile)
 	}
 	{
 		userRouter := apiRouter.Group("/user")
