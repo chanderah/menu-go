@@ -20,11 +20,9 @@ const PATH = "/public_html/go/public"
 func getFtpConnection() (*ftp.ServerConn, error) {
 	conn, err := ftp.Dial(HOST, ftp.DialWithTimeout(10*time.Second))
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	if err = conn.Login(USERNAME, PASSWORD); err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	return conn, nil
@@ -33,14 +31,12 @@ func getFtpConnection() (*ftp.ServerConn, error) {
 func GetFiles() ([]*ftp.Entry, error) {
 	conn, err := getFtpConnection()
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	defer conn.Quit()
 
 	entries, err := conn.List(PATH)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 
@@ -53,7 +49,6 @@ func GetFiles() ([]*ftp.Entry, error) {
 func UploadFile(fileDetails *model.FileDetails, file *os.File) (interface{}, error) {
 	conn, err := getFtpConnection()
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	defer os.Remove(fileDetails.Dest)
@@ -61,7 +56,6 @@ func UploadFile(fileDetails *model.FileDetails, file *os.File) (interface{}, err
 	defer conn.Quit()
 
 	if err := conn.Stor(fileDetails.Dest, file); err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	log.Println("File is uploaded to: " + PATH + fileDetails.Dest)
@@ -90,14 +84,12 @@ func UploadFile2(fileDetails *model.FileDetails) (interface{}, error) {
 func RemoveFile(filePath string) error {
 	conn, err := getFtpConnection()
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 	defer conn.Quit()
 
 	_, err = conn.Retr(filePath)
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
