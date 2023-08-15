@@ -72,6 +72,7 @@ func generateRoute() *gin.Engine {
 		fileRouter := apiRouter.Group("/file")
 		fileRouter.POST("/findAll", controller.GetFiles)
 		fileRouter.POST("/upload", controller.UploadFile)
+		fileRouter.POST("/upload2", controller.UploadFile2)
 		fileRouter.POST("/delete", controller.DeleteFile)
 	}
 	{

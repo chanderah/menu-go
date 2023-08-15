@@ -33,7 +33,7 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 
-	req.File = strings.Split(req.File, "base64,")[1]
+	req.File = strings.Split(req.File, ",")[1]
 	decoded, err := util.Decode64(req.File)
 	if err != nil {
 		response.Error(c, 400, err.Error())
@@ -49,6 +49,20 @@ func UploadFile(c *gin.Context) {
 	}
 
 	res, err := util.UploadFile(&req, file)
+	if err != nil {
+		response.Error(c, 400, err.Error())
+	}
+	response.OK(c, res)
+}
+
+func UploadFile2(c *gin.Context) {
+	var req model.FileDetails
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	res, err := util.UploadFile2(&req)
 	if err != nil {
 		response.Error(c, 400, err.Error())
 	}

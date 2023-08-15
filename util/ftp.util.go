@@ -1,8 +1,11 @@
 package util
 
 import (
+	"bytes"
+	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/chanderah/menu-go/model"
@@ -63,6 +66,25 @@ func UploadFile(fileDetails *model.FileDetails, file *os.File) (interface{}, err
 	}
 	log.Println("File is uploaded to: " + PATH + fileDetails.Dest)
 	return PATH + fileDetails.Dest, nil
+}
+
+func UploadFile2(fileDetails *model.FileDetails) (interface{}, error) {
+	conn, err := getFtpConnection()
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Quit()
+
+	decoded, err := Decode64(strings.Split(fileDetails.File, ",")[1])
+	if err != nil {
+		return nil, err
+	}
+
+	dest := PATH + fileDetails.Dest
+	if err := conn.Stor(dest, bytes.NewReader(decoded)); err != nil {
+		return nil, err
+	}
+	return fmt.Sprint("File is uploaded to:", dest), nil
 }
 
 func RemoveFile(filePath string) error {
