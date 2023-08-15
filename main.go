@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -20,7 +21,57 @@ func main() {
 	// controller.SendMail("Http listen for http://go.chandrasa.fun started!", fmt.Sprintf("Your pid is: %d", os.Getpid()))
 }
 
+func generateRoute() *gin.Engine {
+	router := gin.New()
+	router.Use(middleware.CorsMiddleware)
+	// router.Use(middleware.LoggingMiddleware)
+
+	/* MAIN API ROUTE */
+	apiRouter := router.Group("/api")
+	{
+		fileRouter := apiRouter.Group("/file")
+		fileRouter.POST("/findAll", controller.GetFiles)
+		fileRouter.POST("/upload", controller.UploadFile)
+		fileRouter.POST("/delete", controller.DeleteFile)
+	}
+	{
+		userRouter := apiRouter.Group("/user")
+		userRouter.POST("/findAll", controller.GetUsers)
+		userRouter.POST("/findById", controller.FindUserById)
+		userRouter.POST("/findByUsername", controller.FindUserByUsername)
+
+		userRouter.POST("/register", controller.RegisterUser)
+		userRouter.POST("/login", controller.LoginUser)
+		userRouter.POST("/update", controller.UpdateUser)
+		userRouter.POST("/delete", controller.DeleteUser)
+	}
+	{
+		categoryRouter := apiRouter.Group("/category")
+		categoryRouter.POST("/findAll", controller.GetCategories)
+		categoryRouter.POST("/findById", controller.FindCategoryById)
+		categoryRouter.POST("/create", controller.CreateCategory)
+		categoryRouter.POST("/update", controller.UpdateCategory)
+		categoryRouter.POST("/delete", controller.DeleteCategory)
+	}
+	{
+		productRouter := apiRouter.Group("/product")
+		productRouter.POST("/findAll", controller.GetProducts)
+		productRouter.POST("/findById", controller.FindProductById)
+		productRouter.POST("/findByCategory", controller.FindProductByCategory)
+		productRouter.POST("/create", controller.CreateProduct)
+		productRouter.POST("/update", controller.UpdateProduct)
+		productRouter.POST("/delete", controller.DeleteProduct)
+	}
+	return router
+}
+
 func serve() {
+	defer func() {
+		if err := recover(); err != nil { //1
+			fmt.Println("Gentle recovery from panic: %w", err)
+		}
+	}()
+
 	util.GetConnectionMySql()
 	// util.GetConnectionPostgres()
 
@@ -58,50 +109,4 @@ func serve() {
 	if err := srv.ListenAndServe(); err != nil {
 		log.Printf("listen: %s\n", err)
 	}
-}
-
-func generateRoute() *gin.Engine {
-	router := gin.New()
-	// router.RedirectTrailingSlash = true
-	router.Use(middleware.CorsMiddleware)
-	// router.Use(middleware.LoggingMiddleware)
-
-	/* MAIN API ROUTE */
-	apiRouter := router.Group("/api")
-	{
-		fileRouter := apiRouter.Group("/file")
-		fileRouter.POST("/findAll", controller.GetFiles)
-		fileRouter.POST("/upload", controller.UploadFile)
-		fileRouter.POST("/upload2", controller.UploadFile2)
-		fileRouter.POST("/delete", controller.DeleteFile)
-	}
-	{
-		userRouter := apiRouter.Group("/user")
-		userRouter.POST("/findAll", controller.GetUsers)
-		userRouter.POST("/findById", controller.FindUserById)
-		userRouter.POST("/findByUsername", controller.FindUserByUsername)
-
-		userRouter.POST("/register", controller.RegisterUser)
-		userRouter.POST("/login", controller.LoginUser)
-		userRouter.POST("/update", controller.UpdateUser)
-		userRouter.POST("/delete", controller.DeleteUser)
-	}
-	{
-		categoryRouter := apiRouter.Group("/category")
-		categoryRouter.POST("/findAll", controller.GetCategories)
-		categoryRouter.POST("/findById", controller.FindCategoryById)
-		categoryRouter.POST("/create", controller.CreateCategory)
-		categoryRouter.POST("/update", controller.UpdateCategory)
-		categoryRouter.POST("/delete", controller.DeleteCategory)
-	}
-	{
-		productRouter := apiRouter.Group("/product")
-		productRouter.POST("/findAll", controller.GetProducts)
-		productRouter.POST("/findById", controller.FindProductById)
-		productRouter.POST("/findByCategory", controller.FindProductByCategory)
-		productRouter.POST("/create", controller.CreateProduct)
-		productRouter.POST("/update", controller.UpdateProduct)
-		productRouter.POST("/delete", controller.DeleteProduct)
-	}
-	return router
 }

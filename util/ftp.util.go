@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 	"time"
 
@@ -13,12 +12,12 @@ import (
 )
 
 const HOST = "ftp.chandrasa.fun:21"
-const USERNAME = "chandra5"
-const PASSWORD = "dhearbiznmd"
-const PATH = "/public_html/go/public"
+const USERNAME = "public@chandrasa.fun"
+const PASSWORD = "Ez(xcC{eF_!L"
+const PATH = "/assets"
 
 func getFtpConnection() (*ftp.ServerConn, error) {
-	conn, err := ftp.Dial(HOST, ftp.DialWithTimeout(10*time.Second))
+	conn, err := ftp.Dial(HOST, ftp.DialWithTimeout(5*time.Second))
 	if err != nil {
 		return nil, err
 	}
@@ -46,23 +45,7 @@ func GetFiles() ([]*ftp.Entry, error) {
 	return entries, nil
 }
 
-func UploadFile(fileDetails *model.FileDetails, file *os.File) (interface{}, error) {
-	conn, err := getFtpConnection()
-	if err != nil {
-		return nil, err
-	}
-	defer os.Remove(fileDetails.Dest)
-	defer file.Close()
-	defer conn.Quit()
-
-	if err := conn.Stor(fileDetails.Dest, file); err != nil {
-		return nil, err
-	}
-	log.Println("File is uploaded to: " + PATH + fileDetails.Dest)
-	return PATH + fileDetails.Dest, nil
-}
-
-func UploadFile2(fileDetails *model.FileDetails) (interface{}, error) {
+func UploadFile(fileDetails *model.FileDetails) (interface{}, error) {
 	conn, err := getFtpConnection()
 	if err != nil {
 		return nil, err
@@ -74,11 +57,25 @@ func UploadFile2(fileDetails *model.FileDetails) (interface{}, error) {
 		return nil, err
 	}
 
-	dest := PATH + fileDetails.Dest
+	dest := PATH + generateFileName(fileDetails.Dest)
 	if err := conn.Stor(dest, bytes.NewReader(decoded)); err != nil {
 		return nil, err
 	}
 	return fmt.Sprint("File is uploaded to:", dest), nil
+}
+
+func generateFileName(str string) string {
+	if string(str[0]) != "/" {
+		str = "/" + str
+	}
+	indexOfLastDir:= strings.LastIndex(str, "/")
+	indexOfLastDot:= strings.LastIndex(str, ".")
+	if indexOfLastDot == -1 {
+		return str
+	}
+	fileName:= str[indexOfLastDir+1:]
+	fileExtension:= str[indexOfLastDot:]
+	return strings.Replace(str, fileName, fmt.Sprintf("%d%s", time.Now().UnixMicro(), fileExtension), 1)
 }
 
 func RemoveFile(filePath string) error {

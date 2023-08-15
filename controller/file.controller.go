@@ -2,8 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"os"
-	"strings"
 
 	"github.com/chanderah/menu-go/model"
 	"github.com/chanderah/menu-go/response"
@@ -27,44 +25,10 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 
-	file, err := os.Create(req.Dest)
+	res, err := util.UploadFile(&req)
 	if err != nil {
 		response.Error(c, 400, err.Error())
 		return
-	}
-
-	req.File = strings.Split(req.File, ",")[1]
-	decoded, err := util.Decode64(req.File)
-	if err != nil {
-		response.Error(c, 400, err.Error())
-		return
-	}
-	if _, err := file.Write(decoded); err != nil {
-		response.Error(c, 400, err.Error())
-		return
-	}
-	if err := file.Sync(); err != nil {
-		response.Error(c, 400, err.Error())
-		return
-	}
-
-	res, err := util.UploadFile(&req, file)
-	if err != nil {
-		response.Error(c, 400, err.Error())
-	}
-	response.OK(c, res)
-}
-
-func UploadFile2(c *gin.Context) {
-	var req model.FileDetails
-	if err := c.ShouldBindJSON(&req); err != nil {
-		response.Error(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	res, err := util.UploadFile2(&req)
-	if err != nil {
-		response.Error(c, 400, err.Error())
 	}
 	response.OK(c, res)
 }
