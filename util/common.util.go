@@ -2,18 +2,24 @@ package util
 
 import (
 	"bytes"
-	b64 "encoding/base64"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"reflect"
 	"strings"
 
 	"github.com/chanderah/menu-go/model"
 	"github.com/gin-gonic/gin"
+)
+
+var (
+	KEY = []byte(os.Getenv("KEY"))
 )
 
 func TypeOf(data interface{}) string {
@@ -38,20 +44,47 @@ func GetPaging(paging *model.PagingInfo) {
 	}
 }
 
-func Encode64(str string) string {
-	return b64.StdEncoding.EncodeToString([]byte(str))
+
+func EncryptAES(data []byte) (string, error){
+	result:= make([]byte, aes.BlockSize+len(data))
+	iv:= result[:aes.BlockSize]
+	if _, err := io.ReadFull(rand.Reader, iv);  err !=nil{
+		return "", err
+	}
+
+	block, _ := aes.NewCipher(KEY)
+	encrypter:= cipher.NewCFBEncrypter(block, iv)
+	encrypter.XORKeyStream(result[aes.BlockSize:], data)
+
+	return Encode64(result), nil
+}
+
+func DecryptAES(data string) ([]byte, error) {
+	encrypted, err := Decode64(data)
+	if err != nil {
+		return nil, err
+	}
+
+	block, _ := aes.NewCipher(KEY)
+	iv:= encrypted[:aes.BlockSize]
+	result:= encrypted[aes.BlockSize:]
+
+	decrypter:= cipher.NewCFBDecrypter(block, iv)
+	decrypter.XORKeyStream(result, result)
+
+	return result, nil;
+}
+
+func Encode64(data []byte) string {
+	return base64.StdEncoding.EncodeToString(data)
 }
 
 func Decode64(encodedStr string) ([]byte, error) {
-	return b64.StdEncoding.DecodeString(encodedStr)
+	return base64.StdEncoding.DecodeString(encodedStr)
 }
 
 func StringJoin(str ...string) string {
 	return strings.Join(str, " ")
-}
-
-func DeleteFile(filePath string) {
-	os.Remove(filePath)
 }
 
 func WriteLog(filePath *string, data interface{}) {
@@ -61,27 +94,6 @@ func WriteLog(filePath *string, data interface{}) {
 	// if err != nil {
 
 	// }
-}
-
-func ReadFile(filePath string) (string, error) {
-	body, err := os.ReadFile(filePath)
-	return string(body), err
-	// if err != nil {
-	// 	log.Println("Failed to read file.", err)
-	// } else {
-	// 	log.Println(string(body))
-	// 	DeleteFile(filePath)
-	// }
-}
-
-func CreateFile(filePath string) error {
-	file, err := os.Create(filePath)
-	if err != nil {
-		log.Println("Failed to create file.", err)
-		return err
-	}
-	fmt.Println(file)
-	return nil
 }
 
 func IsEmpty(object interface{}) bool {

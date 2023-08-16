@@ -21,10 +21,9 @@ func LoggingMiddleware(c *gin.Context) {
 	blw := &bodyLogWriter{ResponseWriter: c.Writer, buf: &bytes.Buffer{}}
 	c.Writer = blw
 	c.Next()
-
-	if c.Writer.Status() >= 400 {
+	// if c.Writer.Status() >= 400 {
 		log.Println("RESPONSE: " + blw.buf.String())
-	}
+	// }
 }
 
 func CorsMiddleware(c *gin.Context) {
