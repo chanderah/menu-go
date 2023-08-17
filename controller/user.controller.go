@@ -24,11 +24,13 @@ func RegisterUser(c *gin.Context) {
 
 func LoginUser(c *gin.Context) {
 	var req, data model.User
+	var user model.UserBasic
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
+		return
 	}
 
-	if res := util.DB.First(&data, "username = ?", req.Username); res.Error != nil {
+	if res := util.DB.First(&data, "username = ?", req.Username).Scan(&user); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "User not found!")
 		return
 	}
@@ -40,12 +42,12 @@ func LoginUser(c *gin.Context) {
 		response.AppError(c, res.Error.Error())
 		return
 	}
-	response.Void(c)
+	response.OK(c, user)
 }
 
 func GetUsers(c *gin.Context) {
 	var data []model.UserBasic
-	if res := util.DB.Find(&data); res.Error != nil {
+	if res := util.DB.Find(&model.User{}).Scan(&data); res.Error != nil {
 		response.Error(c, http.StatusInternalServerError, res.Error.Error())
 		return
 	}

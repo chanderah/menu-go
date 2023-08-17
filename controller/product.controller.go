@@ -79,7 +79,7 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	if res := util.DB.First(&req, "id = ?", req.ID); res.Error != nil {
+	if res := util.DB.First(&model.Product{}, "id = ?", req.ID); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
