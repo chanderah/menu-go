@@ -24,7 +24,7 @@ func main() {
 func generateRoute() *gin.Engine {
 	router := gin.New()
 	router.Use(middleware.CorsMiddleware)
-	// router.Use(middleware.LoggingMiddleware)
+	// router.Use(middleware.SecurityMiddleware)
 
 	/* MAIN API ROUTE */
 	apiRouter := router.Group("/api")

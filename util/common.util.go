@@ -18,10 +18,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	KEY = []byte(os.Getenv("KEY"))
-)
-
 func TypeOf(data interface{}) string {
 	return reflect.TypeOf(data).String()
 }
@@ -44,7 +40,6 @@ func GetPaging(paging *model.PagingInfo) {
 	}
 }
 
-
 func EncryptAES(data []byte) (string, error){
 	result:= make([]byte, aes.BlockSize+len(data))
 	iv:= result[:aes.BlockSize]
@@ -52,7 +47,8 @@ func EncryptAES(data []byte) (string, error){
 		return "", err
 	}
 
-	block, _ := aes.NewCipher(KEY)
+	key:= []byte(os.Getenv("KEY"))
+	block, _ := aes.NewCipher(key)
 	encrypter:= cipher.NewCFBEncrypter(block, iv)
 	encrypter.XORKeyStream(result[aes.BlockSize:], data)
 
@@ -64,8 +60,8 @@ func DecryptAES(data string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	block, _ := aes.NewCipher(KEY)
+	key:= []byte(os.Getenv("KEY"))
+	block, _ := aes.NewCipher(key)
 	iv:= encrypted[:aes.BlockSize]
 	result:= encrypted[aes.BlockSize:]
 

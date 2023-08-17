@@ -2,27 +2,31 @@ package middleware
 
 import (
 	"bytes"
-	"log"
 
+	"github.com/chanderah/menu-go/util"
 	"github.com/gin-gonic/gin"
 )
 
-type bodyLogWriter struct {
+type bodyWriter struct {
 	gin.ResponseWriter
-	buf *bytes.Buffer
+	body *bytes.Buffer
 }
 
-func (w bodyLogWriter) Write(b []byte) (int, error) {
-	w.buf.Write(b)
-	return w.ResponseWriter.Write(b)
+func (w bodyWriter) Write(b []byte) (int, error) {
+	w.body.Write(b)
+	data, err := util.EncryptAES(b)
+	if err != nil {
+		data = "ERROR"
+	}
+	return w.ResponseWriter.Write([]byte(data))
 }
 
-func LoggingMiddleware(c *gin.Context) {
-	blw := &bodyLogWriter{ResponseWriter: c.Writer, buf: &bytes.Buffer{}}
-	c.Writer = blw
+func SecurityMiddleware(c *gin.Context) {
+	bw := &bodyWriter{ResponseWriter: c.Writer, body: &bytes.Buffer{}}
+	c.Writer = bw
 	c.Next()
 	// if c.Writer.Status() >= 400 {
-		log.Println("RESPONSE: " + blw.buf.String())
+		// log.Println("RESPONSE: " + bw.body.String())
 	// }
 }
 
