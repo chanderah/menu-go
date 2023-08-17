@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/smtp"
+	"os"
 
 	"github.com/chanderah/menu-go/response"
 	"github.com/gin-gonic/gin"
@@ -28,22 +29,22 @@ func CallSendMail(c *gin.Context) {
 }
 
 func SendMail(subject string, body string) error {
-	host := "smtp.gmail.com"
-	port := 587
-	senderEmail := "chandrachansa@gmail.com"
-	senderPassword := "ijrtzqqvhhjhyxhf"
-	toEmail := []string{"annissanvll@gmail.com"}
-	ccEmail := []string{"chandrachansa@gmail.com"}
+	EMAIL_HOST := os.Getenv("EMAIL_HOST")
+	EMAIL_PORT := os.Getenv("EMAIL_PORT")
+	EMAIL_SENDER := os.Getenv("EMAIL_SENDER")
+	EMAIL_PASSWORD := os.Getenv("EMAIL_PASSWORD")
+	TO_EMAIL := []string{"chandrachansa@gmail.com", "chandrasarifin@gmail.com"}
+	// CC_EMAIL := []string{"chandrasarifin@gmail.com"}
 
-	auth := smtp.PlainAuth("", senderEmail, senderPassword, host)
-	smtpAddr := fmt.Sprintf("%s:%d", host, port)
-	message := []byte("From: " + senderEmail + "\r\n" +
-		"To: " + toEmail[0] + "\r\n" +
-		"Cc: " + ccEmail[0] + "\r\n" +
+	auth := smtp.PlainAuth("", EMAIL_SENDER, EMAIL_PASSWORD, EMAIL_HOST)
+	smtpAddr := fmt.Sprintf("%s:%s", EMAIL_HOST, EMAIL_PORT)
+	message := []byte("From: " + EMAIL_SENDER + "\r\n" +
+		"To: " + TO_EMAIL[0] + "\r\n" +
+		"Cc: " + TO_EMAIL[1] + "\r\n" +
 		"Subject: Awesome Subject!\r\n" +
 		"Pake golang nih. ihiw\r\n")
 
-	err := smtp.SendMail(smtpAddr, auth, senderEmail, append(toEmail), []byte(message))
+	err := smtp.SendMail(smtpAddr, auth, EMAIL_SENDER, TO_EMAIL, []byte(message))
 	if err != nil {
 		return err
 	}
@@ -52,8 +53,8 @@ func SendMail(subject string, body string) error {
 }
 
 // func SendMail(subject string, message interface{}) error {
-// 	const HOST = "mail.chandrasa.fun"
-// 	const PORT = 587
+// 	const EMAIL_HOST = "mail.chandrasa.fun"
+// 	const EMAIL_PORT = 587
 // 	// const SENDER_NAME = "no-reply"
 // 	const AUTH_EMAIL = "no-reply@chandrasa.fun"
 // 	const AUTH_PASSWORD = "dhearbiznmd"
@@ -68,8 +69,8 @@ func SendMail(subject string, body string) error {
 // 		body += fmt.Sprintf("%s: %s\r\n", k, v)
 // 	}
 
-// 	auth := smtp.PlainAuth("", AUTH_EMAIL, AUTH_PASSWORD, HOST)
-// 	smtpAddr := fmt.Sprintf("%s:%d", HOST, PORT)
+// 	auth := smtp.PlainAuth("", AUTH_EMAIL, AUTH_PASSWORD, EMAIL_HOST)
+// 	smtpAddr := fmt.Sprintf("%s:%d", EMAIL_HOST, EMAIL_PORT)
 
 // 	err := smtp.SendMail(smtpAddr, auth, AUTH_EMAIL, append(to, cc...), []byte(body))
 // 	if err != nil {
@@ -82,8 +83,8 @@ func SendMail(subject string, body string) error {
 // func SendMail(subject string, body interface{}) error {
 // 	log.Println("am i called")
 
-// 	const HOST = "mail.chandrasa.fun"
-// 	const PORT = 465
+// 	const EMAIL_HOST = "mail.chandrasa.fun"
+// 	const EMAIL_PORT = 465
 // 	// const SENDER_NAME = "no-reply"
 // 	const AUTH_EMAIL = "no-reply@chandrasa.fun"
 // 	const AUTH_PASSWORD = "dhearbiznmd"
@@ -91,19 +92,19 @@ func SendMail(subject string, body string) error {
 // 	to := []string{"chandrachansa@gmail.com"}
 // 	// cc := []string{"chandra5@chandrasa.fun"}
 
-// 	auth := smtp.PlainAuth("", AUTH_EMAIL, AUTH_PASSWORD, HOST)
+// 	auth := smtp.PlainAuth("", AUTH_EMAIL, AUTH_PASSWORD, EMAIL_HOST)
 // 	tlsconfig := &tls.Config{
 // 		InsecureSkipVerify: false,
-// 		ServerName:         HOST,
+// 		ServerName:         EMAIL_HOST,
 // 	}
 
-// 	servername := fmt.Sprintf("%s:%d", HOST, PORT)
+// 	servername := fmt.Sprintf("%s:%d", EMAIL_HOST, EMAIL_PORT)
 // 	conn, errs := tls.Dial("tcp", servername, tlsconfig)
 // 	if errs != nil {
 // 		log.Panic(errs)
 // 	}
 
-// 	c, err := smtp.NewClient(conn, HOST)
+// 	c, err := smtp.NewClient(conn, EMAIL_HOST)
 // 	if err != nil {
 // 		log.Panic(err)
 // 	}
