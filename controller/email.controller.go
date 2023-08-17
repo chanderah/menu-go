@@ -33,18 +33,18 @@ func SendMail(subject string, body string) error {
 	EMAIL_PORT := os.Getenv("EMAIL_PORT")
 	EMAIL_SENDER := os.Getenv("EMAIL_SENDER")
 	EMAIL_PASSWORD := os.Getenv("EMAIL_PASSWORD")
-	TO_EMAIL := []string{"chandrachansa@gmail.com", "chandrasarifin@gmail.com"}
+	emailTo := []string{"chandrachansa@gmail.com", "chandrasarifin@gmail.com"}
 	// CC_EMAIL := []string{"chandrasarifin@gmail.com"}
 
 	auth := smtp.PlainAuth("", EMAIL_SENDER, EMAIL_PASSWORD, EMAIL_HOST)
 	smtpAddr := fmt.Sprintf("%s:%s", EMAIL_HOST, EMAIL_PORT)
 	message := []byte("From: " + EMAIL_SENDER + "\r\n" +
-		"To: " + TO_EMAIL[0] + "\r\n" +
-		"Cc: " + TO_EMAIL[1] + "\r\n" +
+		"To: " + emailTo[0] + "\r\n" +
+		"Cc: " + emailTo[1] + "\r\n" +
 		"Subject: Awesome Subject!\r\n" +
 		"Pake golang nih. ihiw\r\n")
 
-	err := smtp.SendMail(smtpAddr, auth, EMAIL_SENDER, TO_EMAIL, []byte(message))
+	err := smtp.SendMail(smtpAddr, auth, EMAIL_SENDER, emailTo, []byte(message))
 	if err != nil {
 		return err
 	}
