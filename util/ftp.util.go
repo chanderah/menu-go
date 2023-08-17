@@ -3,7 +3,7 @@ package util
 import (
 	"bytes"
 	"fmt"
-	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -11,17 +11,19 @@ import (
 	"github.com/jlaffaye/ftp"
 )
 
-const HOST = "ftp.chandrasa.fun:21"
-const USERNAME = "public@chandrasa.fun"
-const PASSWORD = "Ez(xcC{eF_!L"
-const PATH = "/assets"
+var FTP_PATH string
 
 func getFtpConnection() (*ftp.ServerConn, error) {
-	conn, err := ftp.Dial(HOST, ftp.DialWithTimeout(5*time.Second))
+	FTP_PATH = os.Getenv("FTP_PATH")
+	FTP_HOST := os.Getenv("FTP_HOST")
+	FTP_USERNAME := os.Getenv("FTP_USERNAME")
+	FTP_PASSWORD := os.Getenv("FTP_PASSWORD")
+
+	conn, err := ftp.Dial(FTP_HOST, ftp.DialWithTimeout(5*time.Second))
 	if err != nil {
 		return nil, err
 	}
-	if err = conn.Login(USERNAME, PASSWORD); err != nil {
+	if err = conn.Login(FTP_USERNAME, FTP_PASSWORD); err != nil {
 		return nil, err
 	}
 	return conn, nil
@@ -34,14 +36,13 @@ func GetFiles() ([]*ftp.Entry, error) {
 	}
 	defer conn.Quit()
 
-	entries, err := conn.List(PATH)
+	entries, err := conn.List(FTP_PATH)
 	if err != nil {
 		return nil, err
 	}
-
-	for _, entry := range entries {
-		log.Println(entry.Name, entry.Type, entry.Size)
-	}
+	// for _, entry := range entries {
+	// 	log.Println(entry.Name, entry.Type, entry.Size)
+	// }
 	return entries, nil
 }
 
@@ -57,7 +58,7 @@ func UploadFile(fileDetails *model.FileDetails) (interface{}, error) {
 		return nil, err
 	}
 
-	dest := PATH + generateFileName(fileDetails.Dest)
+	dest := FTP_PATH + generateFileName(fileDetails.Dest)
 	if err := conn.Stor(dest, bytes.NewReader(decoded)); err != nil {
 		return nil, err
 	}

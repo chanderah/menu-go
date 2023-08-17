@@ -47,8 +47,7 @@ func EncryptAES(data []byte) (string, error){
 		return "", err
 	}
 
-	key:= []byte(os.Getenv("KEY"))
-	block, _ := aes.NewCipher(key)
+	block, _ := aes.NewCipher([]byte(os.Getenv("KEY")))
 	encrypter:= cipher.NewCFBEncrypter(block, iv)
 	encrypter.XORKeyStream(result[aes.BlockSize:], data)
 
@@ -60,8 +59,7 @@ func DecryptAES(data string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	key:= []byte(os.Getenv("KEY"))
-	block, _ := aes.NewCipher(key)
+	block, _ := aes.NewCipher([]byte(os.Getenv("KEY")))
 	iv:= encrypted[:aes.BlockSize]
 	result:= encrypted[aes.BlockSize:]
 
