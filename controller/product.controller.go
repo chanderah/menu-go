@@ -65,6 +65,16 @@ func CreateProduct(c *gin.Context) {
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	imageUrl, err := util.UploadFile(&model.FileDetails{
+		Dest: "/image.jpg",
+		File: req.Image,
+	})
+	if err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	req.Image = imageUrl
 	if res := util.DB.Create(&req); res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
@@ -79,10 +89,30 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	if res := util.DB.First(&model.Product{}, "id = ?", req.ID); res.Error != nil {
+	var data = model.Product{}
+	if res := util.DB.First(&data, "id = ?", req.ID); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
+
+	if req.Image != data.Image {
+		// uploadImg
+		imageUrl, err := util.UploadFile(&model.FileDetails{
+			Dest: "/image.jpg",
+			File: req.Image,
+		})
+		if err != nil {
+			response.Error(c, 500, err.Error())
+			return
+		}
+		req.Image = imageUrl
+
+		if err := util.RemoveFile(data.Image); err != nil {
+			response.Error(c, 500, err.Error())
+			return
+		}
+	}
+
 	if res := util.DB.Model(&req).Updates(req); res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return

@@ -46,36 +46,36 @@ func GetFiles() ([]*ftp.Entry, error) {
 	return entries, nil
 }
 
-func UploadFile(fileDetails *model.FileDetails) (interface{}, error) {
+func UploadFile(fileDetails *model.FileDetails) (string, error) {
 	conn, err := getFtpConnection()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	defer conn.Quit()
 
 	decoded, err := Decode64(strings.Split(fileDetails.File, ",")[1])
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	dest := FTP_PATH + generateFileName(fileDetails.Dest)
 	if err := conn.Stor(dest, bytes.NewReader(decoded)); err != nil {
-		return nil, err
+		return "", err
 	}
-	return fmt.Sprint("File is uploaded to:", dest), nil
+	return fmt.Sprint(dest), nil
 }
 
 func generateFileName(str string) string {
 	if string(str[0]) != "/" {
 		str = "/" + str
 	}
-	indexOfLastDir:= strings.LastIndex(str, "/")
-	indexOfLastDot:= strings.LastIndex(str, ".")
+	indexOfLastDir := strings.LastIndex(str, "/")
+	indexOfLastDot := strings.LastIndex(str, ".")
 	if indexOfLastDot == -1 {
 		return str
 	}
-	fileName:= str[indexOfLastDir+1:]
-	fileExtension:= str[indexOfLastDot:]
+	fileName := str[indexOfLastDir+1:]
+	fileExtension := str[indexOfLastDot:]
 	return strings.Replace(str, fileName, fmt.Sprintf("%d%s", time.Now().UnixMicro(), fileExtension), 1)
 }
 
