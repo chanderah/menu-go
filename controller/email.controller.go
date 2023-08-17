@@ -20,7 +20,6 @@ func CallSendMail(c *gin.Context) {
 		response.Error(c, 400, err.Error())
 		return
 	}
-
 	if err := SendMail(req.Subject, req.Body); err != nil {
 		response.Error(c, 400, err.Error())
 		return
@@ -44,11 +43,9 @@ func SendMail(subject string, body string) error {
 		"Subject: Awesome Subject!\r\n" +
 		"Pake golang nih. ihiw\r\n")
 
-	err := smtp.SendMail(smtpAddr, auth, EMAIL_SENDER, emailTo, []byte(message))
-	if err != nil {
+	if err := smtp.SendMail(smtpAddr, auth, EMAIL_SENDER, emailTo, []byte(message)); err != nil {
 		return err
 	}
-
 	return nil
 }
 
