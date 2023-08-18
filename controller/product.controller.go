@@ -66,15 +66,18 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	imageUrl, err := util.UploadFile(&model.FileDetails{
-		Dest: "/image.jpg",
-		File: req.Image,
-	})
-	if err != nil {
-		response.Error(c, 400, err.Error())
-		return
+	if !util.IsEmpty(req.Image) {
+		imageUrl, err := util.UploadFile(&model.FileDetails{
+			Dest: "/image.jpg",
+			File: req.Image,
+		})
+		if err != nil {
+			response.Error(c, 400, err.Error())
+			return
+		}
+		req.Image = imageUrl
 	}
-	req.Image = imageUrl
+
 	if res := util.DB.Create(&req); res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
