@@ -23,8 +23,7 @@ type Product struct {
 	CategoryId  uint      `json:"categoryId,omitempty" gorm:"index:product_ix2"`
 	Name        string    `json:"name" gorm:"type:varchar(255);not null;index:product_ix1;index:product_ix2" binding:"required" `
 	Description string    `json:"description,omitempty" gorm:"type:varchar(255)"`
-	OptionType  string    `json:"optionType,omitempty" gorm:"type:varchar(100)"`
-	OptionValue string    `json:"optionValue,omitempty" gorm:"type:varchar(100)"`
+	OptionId    uint      `json:"optionId,omitempty"`
 	Price       uint      `json:"price" gorm:"not null;index:product_ix1;index:product_ix2" binding:"required"`
 	Quantity    uint      `json:"quantity,omitempty"`
 	Status      *bool     `json:"status,omitempty"`

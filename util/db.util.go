@@ -16,10 +16,11 @@ import (
 
 var DB *gorm.DB
 
-func export(db *gorm.DB) {
+func sync(db *gorm.DB) {
 	db.AutoMigrate(&model.User{})
-	db.AutoMigrate(&model.Product{})
 	db.AutoMigrate(&model.Category{})
+	db.AutoMigrate(&model.Product{})
+	db.AutoMigrate(&model.ProductOption{})
 	DB = db
 }
 
@@ -43,7 +44,7 @@ func GetConnectionMySql() {
 	if err != nil {
 		log.Fatal("Failed to connect to the Database!")
 	}
-	export(db)
+	sync(db)
 }
 
 func GetConnectionPostgres() {
@@ -74,5 +75,5 @@ func GetConnectionPostgres() {
 	if err != nil {
 		log.Fatal("Failed to connect to the Database!")
 	}
-	export(db)
+	sync(db)
 }
