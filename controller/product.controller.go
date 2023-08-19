@@ -116,6 +116,7 @@ func UpdateProduct(c *gin.Context) {
 		}
 	}
 
+	fmt.Sprintln(req)
 	if res := util.DB.Model(&req).Updates(req); res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return

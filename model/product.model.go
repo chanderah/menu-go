@@ -27,7 +27,7 @@ type Product struct {
 	OptionValue string    `json:"optionValue,omitempty" gorm:"type:varchar(100)"`
 	Price       uint      `json:"price" gorm:"not null;index:product_ix1;index:product_ix2" binding:"required"`
 	Quantity    uint      `json:"quantity,omitempty"`
-	Status      string    `json:"status,omitempty" gorm:"type:varchar(100)"`
+	Status      *bool     `json:"status,omitempty"`
 	Image       string    `json:"image,omitempty"`
 	UserCreated uint      `json:"userCreated,omitempty" gorm:"not null" binding:"required" `
 	UpdatedAt   time.Time `json:"updatedAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`

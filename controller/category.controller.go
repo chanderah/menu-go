@@ -49,7 +49,7 @@ func UpdateCategory(c *gin.Context) {
 		return
 	}
 
-	if res := util.DB.First(&req, "id = ?", req.ID); res.Error != nil {
+	if res := util.DB.First(&model.Category{}, "id = ?", req.ID); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
@@ -69,6 +69,12 @@ func DeleteCategory(c *gin.Context) {
 		return
 	}
 	if res := util.DB.Delete(&req); res.Error != nil {
+		response.AppError(c, res.Error.Error())
+		return
+	}
+	// set product with that ID to null
+	res := util.DB.Model(&model.Product{}).Where("category_id = ?", req.ID).Update("category_id", nil)
+	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
 	}

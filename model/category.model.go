@@ -4,8 +4,8 @@ import "time"
 
 type Category struct {
 	ID          uint      `json:"id" gorm:"primaryKey"`
+	Label       string    `json:"label" gorm:"type:varchar(100);unique;not null" binding:"required"`
 	Order       int       `json:"order" gorm:"not null" binding:"required"`
-	Name        string    `json:"name" gorm:"type:varchar(100);unique;not null" binding:"required"`
 	Icon        string    `json:"icon,omitempty" gorm:"type:varchar(100)"`
 	Status      string    `json:"status,omitempty" gorm:"type:varchar(100)"`
 	UserCreated uint      `json:"userCreated,omitempty" gorm:"not null" binding:"required"`
