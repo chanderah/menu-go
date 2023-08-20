@@ -18,11 +18,13 @@ func GetProducts(c *gin.Context) {
 	c.ShouldBindJSON(&paging)
 	util.GetPaging(&paging)
 
-	where := "1=1"
+	filter := "1=1"
 	if !util.IsEmpty(paging.Filter) {
-		where = fmt.Sprintf("name LIKE '%%%[1]s%%' OR code LIKE '%%%[1]s%%' OR CAST(price AS CHAR) LIKE '%%%[1]s%%'", paging.Filter)
+		filter = fmt.Sprintf("name LIKE '%%%[1]s%%' OR code LIKE '%%%[1]s%%' OR CAST(price AS CHAR) LIKE '%%%[1]s%%'", paging.Filter)
 	}
-	res := util.DB.Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).Find(&data, where).Count(&rowCount)
+	// res := util.DB.Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).Find(&data, where).Count(&rowCount)
+	res := util.DB.Model(&model.Product{}).Where(filter).Order(util.StringJoin(paging.SortField, paging.SortOrder)).Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
+	// .Order(util.StringJoin(paging.SortField, paging.SortOrder)).Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data, where)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
@@ -116,7 +118,6 @@ func UpdateProduct(c *gin.Context) {
 		}
 	}
 
-	fmt.Sprintln(req)
 	if res := util.DB.Model(&req).Updates(req); res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
@@ -138,3 +139,51 @@ func DeleteProduct(c *gin.Context) {
 	}
 	response.Void(c)
 }
+
+/* PRODUCT OPTION */
+
+func GetProductOptions(c *gin.Context) {
+	data := []model.ProductOption{}
+
+	if res := util.DB.Find(&data); res != nil {
+		response.AppError(c, res.Error.Error())
+		return
+	}
+	response.OK(c, data)
+}
+
+func UpdateProductOptions(c *gin.Context) {
+	var req = model.ProductOption{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if res := util.DB.First(&req, "id = ?", req.ID); res.Error != nil {
+		response.Error(c, http.StatusNotFound, "Data not found!")
+		return
+	}
+
+	if res := util.DB.Model(&req).Updates(req); res.Error != nil {
+		response.AppError(c, res.Error.Error())
+		return
+	}
+	response.Void(c)
+}
+
+func DeleteProductOptions(c *gin.Context) {
+	var req = model.Product{}
+
+	c.ShouldBindJSON(&req)
+	if res := util.DB.First(&req, "id = ?", req.ID); res.Error != nil {
+		response.Error(c, http.StatusNotFound, "Data not found!")
+		return
+	}
+	if res := util.DB.Delete(&req); res.Error != nil {
+		response.AppError(c, res.Error.Error())
+		return
+	}
+	response.Void(c)
+}
+
+/* PRODUCT OPTION */
