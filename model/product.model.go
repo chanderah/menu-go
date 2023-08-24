@@ -1,6 +1,8 @@
 package model
 
 import (
+	"encoding/json"
+	"errors"
 	"time"
 )
 
@@ -18,12 +20,13 @@ import (
 // options?: ProductOptions[];
 
 type Product struct {
-	ID          uint      `json:"id" gorm:"primaryKey"`
-	Code        string    `json:"code,omitempty" gorm:"type:varchar(100);index:product_ix1;index:product_ix2"`
-	CategoryId  uint      `json:"categoryId,omitempty" gorm:"index:product_ix2"`
-	Name        string    `json:"name" gorm:"type:varchar(255);not null;index:product_ix1;index:product_ix2" binding:"required" `
-	Description string    `json:"description,omitempty" gorm:"type:varchar(255)"`
-	Options     string    `json:"options,omitempty"`
+	ID          uint   `json:"id" gorm:"primaryKey"`
+	Code        string `json:"code,omitempty" gorm:"type:varchar(100);index:product_ix1;index:product_ix2"`
+	CategoryId  uint   `json:"categoryId,omitempty" gorm:"index:product_ix2"`
+	Name        string `json:"name" gorm:"type:varchar(255);not null;index:product_ix1;index:product_ix2" binding:"required" `
+	Description string `json:"description,omitempty" gorm:"type:varchar(255)"`
+	// Options     string    `json:"options,omitempty"`
+	Options     string    `json:"options" gorm:"type:json"`
 	Price       uint      `json:"price" gorm:"not null;index:product_ix1;index:product_ix2" binding:"required"`
 	Quantity    uint      `json:"quantity,omitempty"`
 	Status      *bool     `json:"status,omitempty"`
@@ -33,18 +36,28 @@ type Product struct {
 	CreatedAt   time.Time `json:"createdAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"`
 }
 
-// type Producttt struct {
-// 	Options []Optionsss `json:"options" gorm:"type:json"`
-// }
+type Options struct {
+	Name     string   `json:"name"`
+	Multiple *bool    `json:"multiple"`
+	Required *bool    `json:"required"`
+	Values   []Values `json:"values"`
+}
 
-// type Optionsss struct {
-// 	Name     string     `json:"name"`
-// 	Multiple string     `json:"multiple"`
-// 	Required string     `json:"required"`
-// 	Values   []Valuesss `json:"values"`
-// }
+type Values struct {
+	Value string `json:"value"`
+	Price uint   `json:"price"`
+}
 
-// type Valuesss struct {
-// 	Value string `json:"value"`
-// 	Price uint   `json:"price"`
+func (a *Options) Scan(value interface{}) error {
+	b, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+	// var obj []*Options
+	// return json.Unmarshal(b, &obj)
+	return json.Unmarshal(b, &a)
+}
+
+// func (a Options) Value() (driver.Value, error) {
+// 	return json.Marshal(a)
 // }
