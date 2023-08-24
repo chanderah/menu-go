@@ -32,3 +32,19 @@ type Product struct {
 	UpdatedAt   time.Time `json:"updatedAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
 	CreatedAt   time.Time `json:"createdAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"`
 }
+
+// type Producttt struct {
+// 	Options []Optionsss `json:"options" gorm:"type:json"`
+// }
+
+// type Optionsss struct {
+// 	Name     string     `json:"name"`
+// 	Multiple string     `json:"multiple"`
+// 	Required string     `json:"required"`
+// 	Values   []Valuesss `json:"values"`
+// }
+
+// type Valuesss struct {
+// 	Value string `json:"value"`
+// 	Price uint   `json:"price"`
+// }
