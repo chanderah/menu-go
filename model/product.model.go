@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql/driver"
 	"encoding/json"
 	"errors"
 	"time"
@@ -26,7 +27,7 @@ type Product struct {
 	Name        string `json:"name" gorm:"type:varchar(255);not null;index:product_ix1;index:product_ix2" binding:"required" `
 	Description string `json:"description,omitempty" gorm:"type:varchar(255)"`
 	// Options     string    `json:"options,omitempty"`
-	Options     string    `json:"options" gorm:"type:json"`
+	Options     []Options `json:"options" gorm:"type:json"`
 	Price       uint      `json:"price" gorm:"not null;index:product_ix1;index:product_ix2" binding:"required"`
 	Quantity    uint      `json:"quantity,omitempty"`
 	Status      *bool     `json:"status,omitempty"`
@@ -48,16 +49,30 @@ type Values struct {
 	Price uint   `json:"price"`
 }
 
-func (a *Options) Scan(value interface{}) error {
+func (o *Options) Scan(value interface{}) error {
 	b, ok := value.([]byte)
 	if !ok {
 		return errors.New("type assertion to []byte failed")
 	}
 	// var obj []*Options
 	// return json.Unmarshal(b, &obj)
-	return json.Unmarshal(b, &a)
+	return json.Unmarshal(b, &o)
 }
 
-// func (a Options) Value() (driver.Value, error) {
-// 	return json.Marshal(a)
+func (o Options) Value() (driver.Value, error) {
+	r, err := json.Marshal(o)
+	return string(r), err
+}
+
+// func (o *Product) Scan(value interface{}) error {
+// 	b, ok := value.([]byte)
+// 	if !ok {
+// 		return errors.New("type assertion to []byte failed")
+// 	}
+// 	return json.Unmarshal(b, &o)
+// }
+
+// func (o Product) Value() (driver.Value, error) {
+// 	r, err := json.Marshal(o)
+// 	return string(r), err
 // }
