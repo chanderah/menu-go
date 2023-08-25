@@ -60,7 +60,7 @@ func (o *Options) Scan(value interface{}) error {
 }
 
 func (o Options) Value() (driver.Value, error) {
-	r, err := json.Marshal(o)
+	r, err := json.Marshal(&o)
 	return string(r), err
 }
 
