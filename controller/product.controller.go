@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/chanderah/menu-go/response"
 	"github.com/chanderah/menu-go/util"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func GetProducts(c *gin.Context) {
@@ -25,12 +27,11 @@ func GetProducts(c *gin.Context) {
 
 	res := util.DB.Model(&model.Product{}).Where(filter).Order(util.StringJoin(paging.SortField, paging.SortOrder)).Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
 	if res.Error != nil {
-		response.AppError(c, res.Error.Error())
-		return
+		if !errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			response.AppError(c, res.Error.Error())
+			return
+		}
 	}
-
-	fmt.Printf("%v", data[0].Options)
-
 	response.Paging(c, data, rowCount)
 }
 
