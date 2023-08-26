@@ -20,7 +20,6 @@ func sync(db *gorm.DB) {
 	db.AutoMigrate(&model.User{})
 	db.AutoMigrate(&model.Category{})
 	db.AutoMigrate(&model.Product{})
-	db.AutoMigrate(&model.ProductOption{})
 	DB = db
 }
 

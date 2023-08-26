@@ -3,7 +3,6 @@ package model
 import (
 	"database/sql/driver"
 	"encoding/json"
-	"errors"
 	"time"
 )
 
@@ -27,7 +26,7 @@ type Product struct {
 	Name        string `json:"name" gorm:"type:varchar(255);not null;index:product_ix1;index:product_ix2" binding:"required" `
 	Description string `json:"description,omitempty" gorm:"type:varchar(255)"`
 	// Options     string    `json:"options,omitempty"`
-	Options     []Options `json:"options" gorm:"type:json"`
+	Options     Options   `json:"options" gorm:"type:json;default:[]"`
 	Price       uint      `json:"price" gorm:"not null;index:product_ix1;index:product_ix2" binding:"required"`
 	Quantity    uint      `json:"quantity,omitempty"`
 	Status      *bool     `json:"status,omitempty"`
@@ -37,42 +36,26 @@ type Product struct {
 	CreatedAt   time.Time `json:"createdAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"`
 }
 
-type Options struct {
-	Name     string   `json:"name"`
-	Multiple *bool    `json:"multiple"`
-	Required *bool    `json:"required"`
-	Values   []Values `json:"values"`
+type Options []ProductOptions
+
+type ProductOptions struct {
+	Name     string                `json:"name"`
+	Multiple *bool                 `json:"multiple"`
+	Required *bool                 `json:"required"`
+	Values   []ProductOptionValues `json:"values"`
 }
 
-type Values struct {
+type ProductOptionValues struct {
 	Value string `json:"value"`
 	Price uint   `json:"price"`
 }
 
 func (o *Options) Scan(value interface{}) error {
-	b, ok := value.([]byte)
-	if !ok {
-		return errors.New("type assertion to []byte failed")
-	}
-	// var obj []*Options
-	// return json.Unmarshal(b, &obj)
+	b, _ := value.([]byte)
 	return json.Unmarshal(b, &o)
 }
 
 func (o Options) Value() (driver.Value, error) {
 	r, err := json.Marshal(&o)
-	return string(r), err
+	return r, err
 }
-
-// func (o *Product) Scan(value interface{}) error {
-// 	b, ok := value.([]byte)
-// 	if !ok {
-// 		return errors.New("type assertion to []byte failed")
-// 	}
-// 	return json.Unmarshal(b, &o)
-// }
-
-// func (o Product) Value() (driver.Value, error) {
-// 	r, err := json.Marshal(o)
-// 	return string(r), err
-// }
