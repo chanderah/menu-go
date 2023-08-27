@@ -35,6 +35,29 @@ func GetProducts(c *gin.Context) {
 	response.Paging(c, data, rowCount)
 }
 
+func GetActiveProducts(c *gin.Context) {
+	var rowCount int64
+	data := []model.Product{}
+
+	paging := model.PagingInfo{}
+	c.ShouldBindJSON(&paging)
+	util.GetPaging(&paging)
+
+	filter := "1=1"
+	if !util.IsEmpty(paging.Filter) {
+		filter = fmt.Sprintf("status = 1 AND name LIKE '%%%[1]s%%' OR code LIKE '%%%[1]s%%' OR CAST(price AS CHAR) LIKE '%%%[1]s%%'", paging.Filter)
+	}
+
+	res := util.DB.Model(&model.Product{}).Where(filter).Order(util.StringJoin(paging.SortField, paging.SortOrder)).Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
+	if res.Error != nil {
+		if !errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			response.AppError(c, res.Error.Error())
+			return
+		}
+	}
+	response.Paging(c, data, rowCount)
+}
+
 func FindProductByCategory(c *gin.Context) {
 	var rowCount int64
 	data := []model.Product{}
@@ -44,6 +67,24 @@ func FindProductByCategory(c *gin.Context) {
 	util.GetPaging(&paging)
 
 	where := fmt.Sprintf("categoryId = %d AND name LIKE '%%%[2]s%%' OR code LIKE '%%%[2]s%%' OR CAST(price AS CHAR) LIKE '%%%[2]s%%'", paging.Field.Value, paging.Filter)
+	page := util.DB.Limit(paging.Limit).Offset(paging.Offset)
+	res := page.Order(paging.SortField+" "+paging.SortOrder).Find(&data, where).Count(&rowCount)
+	if res.Error != nil {
+		response.AppError(c, res.Error.Error())
+		return
+	}
+	response.Paging(c, data, rowCount)
+}
+
+func FindActiveProductByCategory(c *gin.Context) {
+	var rowCount int64
+	data := []model.Product{}
+
+	paging := model.PagingInfo{}
+	c.ShouldBindJSON(&paging)
+	util.GetPaging(&paging)
+
+	where := fmt.Sprintf("status = 1 AND categoryId = %d AND name LIKE '%%%[2]s%%' OR code LIKE '%%%[2]s%%' OR CAST(price AS CHAR) LIKE '%%%[2]s%%'", paging.Field.Value, paging.Filter)
 	page := util.DB.Limit(paging.Limit).Offset(paging.Offset)
 	res := page.Order(paging.SortField+" "+paging.SortOrder).Find(&data, where).Count(&rowCount)
 	if res.Error != nil {
@@ -104,7 +145,6 @@ func UpdateProduct(c *gin.Context) {
 	}
 
 	if req.Image != data.Image {
-		// uploadImg
 		imageUrl, err := util.UploadFile(&model.FileDetails{
 			Dest: "/image.jpg",
 			File: req.Image,
@@ -115,13 +155,17 @@ func UpdateProduct(c *gin.Context) {
 		}
 		req.Image = imageUrl
 
-		if err := util.RemoveFile(data.Image); err != nil {
-			response.Error(c, 500, err.Error())
-			return
-		}
+		fmt.Println(imageUrl)
+		fmt.Println(req.Image)
+
+		util.RemoveFile(data.Image)
+		// if err := util.RemoveFile(data.Image); err != nil {
+		// 	response.Error(c, 500, err.Error())
+		// 	return
+		// }
 	}
 
-	if res := util.DB.Model(&req).Updates(req); res.Error != nil {
+	if res := util.DB.Model(&req).Updates(&req); res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
 	}

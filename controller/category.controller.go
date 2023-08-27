@@ -35,6 +35,8 @@ func CreateCategory(c *gin.Context) {
 		response.Error(c, 400, err.Error())
 		return
 	}
+
+	req.SetRouterLink()
 	if res := util.DB.Create(&req); res.Error != nil {
 		response.Error(c, http.StatusUnprocessableEntity, res.Error.Error())
 		return
@@ -53,6 +55,7 @@ func UpdateCategory(c *gin.Context) {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
 	}
+	req.SetRouterLink()
 	if res := util.DB.Model(&req).Updates(&req); res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
