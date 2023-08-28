@@ -45,7 +45,7 @@ func GetActiveProducts(c *gin.Context) {
 
 	filter := "1=1"
 	if !util.IsEmpty(paging.Filter) {
-		filter = fmt.Sprintf("status = 1 AND name LIKE '%%%[1]s%%' OR code LIKE '%%%[1]s%%' OR CAST(price AS CHAR) LIKE '%%%[1]s%%'", paging.Filter)
+		filter = fmt.Sprintf("status = 1 AND name LIKE %s", paging.Filter)
 	}
 
 	res := util.DB.Model(&model.Product{}).Where(filter).Order(util.StringJoin(paging.SortField, paging.SortOrder)).Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
@@ -84,7 +84,7 @@ func FindActiveProductByCategory(c *gin.Context) {
 	c.ShouldBindJSON(&paging)
 	util.GetPaging(&paging)
 
-	where := fmt.Sprintf("status = 1 AND categoryId = %d AND name LIKE '%%%[2]s%%' OR code LIKE '%%%[2]s%%' OR CAST(price AS CHAR) LIKE '%%%[2]s%%'", paging.Field.Value, paging.Filter)
+	where := fmt.Sprintf("status = 1 AND categoryId = %d AND name LIKE %s", paging.Field.Value, paging.Filter)
 	page := util.DB.Limit(paging.Limit).Offset(paging.Offset)
 	res := page.Order(paging.SortField+" "+paging.SortOrder).Find(&data, where).Count(&rowCount)
 	if res.Error != nil {
