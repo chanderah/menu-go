@@ -40,15 +40,15 @@ func GetPaging(paging *model.PagingInfo) {
 	}
 }
 
-func EncryptAES(data []byte) (string, error){
-	result:= make([]byte, aes.BlockSize+len(data))
-	iv:= result[:aes.BlockSize]
-	if _, err := io.ReadFull(rand.Reader, iv);  err !=nil{
+func EncryptAES(data []byte) (string, error) {
+	result := make([]byte, aes.BlockSize+len(data))
+	iv := result[:aes.BlockSize]
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
 		return "", err
 	}
 
 	block, _ := aes.NewCipher([]byte(os.Getenv("KEY")))
-	encrypter:= cipher.NewCFBEncrypter(block, iv)
+	encrypter := cipher.NewCFBEncrypter(block, iv)
 	encrypter.XORKeyStream(result[aes.BlockSize:], data)
 
 	return Encode64(result), nil
@@ -60,13 +60,13 @@ func DecryptAES(data string) ([]byte, error) {
 		return nil, err
 	}
 	block, _ := aes.NewCipher([]byte(os.Getenv("KEY")))
-	iv:= encrypted[:aes.BlockSize]
-	result:= encrypted[aes.BlockSize:]
+	iv := encrypted[:aes.BlockSize]
+	result := encrypted[aes.BlockSize:]
 
-	decrypter:= cipher.NewCFBDecrypter(block, iv)
+	decrypter := cipher.NewCFBDecrypter(block, iv)
 	decrypter.XORKeyStream(result, result)
 
-	return result, nil;
+	return result, nil
 }
 
 func Encode64(data []byte) string {

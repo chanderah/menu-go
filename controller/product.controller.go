@@ -43,12 +43,12 @@ func GetActiveProducts(c *gin.Context) {
 	c.ShouldBindJSON(&paging)
 	util.GetPaging(&paging)
 
-	filter := "1=1"
+	filter := "status = 1"
 	if !util.IsEmpty(paging.Filter) {
-		filter = fmt.Sprintf("status = 1 AND name LIKE %s", paging.Filter)
+		filter = fmt.Sprintf("%s AND name LIKE '%%%s%%'", filter, paging.Filter)
 	}
 
-	res := util.DB.Model(&model.Product{}).Where(filter).Order(util.StringJoin(paging.SortField, paging.SortOrder)).Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
+	res := util.DB.Model(&model.Product{}).Where(filter).Order(util.StringJoin("name", "ASC")).Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
 	if res.Error != nil {
 		if !errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			response.AppError(c, res.Error.Error())
@@ -56,6 +56,20 @@ func GetActiveProducts(c *gin.Context) {
 		}
 	}
 	response.Paging(c, data, rowCount)
+}
+
+func GetFeaturedProducts(c *gin.Context) {
+	data := []model.Product{}
+
+	filter := "status = 1 AND featured = 1"
+	res := util.DB.Model(&model.Product{}).Where(filter).Limit(6).Find(&data)
+	if res.Error != nil {
+		if !errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			response.AppError(c, res.Error.Error())
+			return
+		}
+	}
+	response.OK(c, data)
 }
 
 func FindProductByCategory(c *gin.Context) {
@@ -84,7 +98,7 @@ func FindActiveProductByCategory(c *gin.Context) {
 	c.ShouldBindJSON(&paging)
 	util.GetPaging(&paging)
 
-	where := fmt.Sprintf("status = 1 AND categoryId = %d AND name LIKE %s", paging.Field.Value, paging.Filter)
+	where := fmt.Sprintf("status = 1 AND categoryId = %d AND name LIKE '%%%s%%' ", paging.Field.Value, paging.Filter)
 	page := util.DB.Limit(paging.Limit).Offset(paging.Offset)
 	res := page.Order(paging.SortField+" "+paging.SortOrder).Find(&data, where).Count(&rowCount)
 	if res.Error != nil {
