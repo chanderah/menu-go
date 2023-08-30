@@ -98,9 +98,12 @@ func FindActiveProductByCategory(c *gin.Context) {
 	c.ShouldBindJSON(&paging)
 	util.GetPaging(&paging)
 
-	// res := util.DB.Model(&model.Product{}).Where("category_id = ?", paging.Field.Value).Where("name LIKE ?", "%"+paging.Filter+"%").Order("name ASC").Limit(paging.Limit).Offset(paging.Offset).Find(&data)
-	filter := fmt.Sprintf("category_id = %s AND name LIKE '%%%s%%'", paging.Field.Value, paging.Filter)
-	res := util.DB.Model(&model.Product{}).Where(filter).Order("name ASC").Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
+	filter := fmt.Sprintf("category_id = %d AND name LIKE '%%%s%%'", paging.Field.Value.(uint), paging.Filter)
+	res := util.DB.Model(&model.Product{}).
+		Where(filter).
+		Count(&rowCount).
+		Order("name ASC").
+		Limit(paging.Limit).Offset(paging.Offset).Find(&data)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
@@ -109,36 +112,24 @@ func FindActiveProductByCategory(c *gin.Context) {
 }
 
 func FindActiveProductByCategoryParam(c *gin.Context) {
-	// var rowCount int64
+	var rowCount int64
 	data := []model.Product{}
 
 	paging := model.PagingInfo{}
 	c.ShouldBindJSON(&paging)
 	util.GetPaging(&paging)
 
-	// filter := fmt.Sprintf("category_id = %s AND name LIKE '%%%s%%'", paging.Field.Value, paging.Filter)
-	// res := util.DB.Model(&model.Product{}).Where(filter).Order("name ASC").Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
-	// if res.Error != nil {
-	// 	response.AppError(c, res.Error.Error())
-	// 	return
-	// }
-	// response.Paging(c, data, rowCount)
-
-	// var category model.Category
-	// util.DB.Model(&model.Category{}).Where("param = ?", strings.ToLower("Foods")).Select("id").Limit(1).Find(&category)
-
-	// res := util.DB.Model(&model.Product{}).Where(&model.Category{Param: strings.ToLower("Foods")}).Find(&data)
-
-	res := util.DB.Where("category_id = (?)", util.DB.Model(&model.Category{}).Select("id").Where("param = ?", strings.ToLower("Foods")).Limit(1)).Find(&data)
-
-	// query := fmt.Sprintf("SELECT t.* FROM %s AS t JOIN %s AS t2 on t2.id = t.category_id WHERE t2.param = '%s'", util.GetTableName("product"), util.GetTableName("category"), strings.ToLower("Foods"))
-	// res := util.DB.Raw(query).Limit(1).Scan(&data)
-	// (&model.Product{}).Where(&model.Category{Param: strings.ToLower("Foods")}).Find(&data)
+	categoryId := util.DB.Model(&model.Category{}).Select("id").Where("param = ?", strings.ToLower(paging.Field.Value.(string))).Limit(1)
+	res := util.DB.Model(&model.Product{}).
+		Where("category_id = (?)", categoryId).
+		Where(fmt.Sprintf("name LIKE '%%%s%%'", paging.Filter)).
+		Count(&rowCount).
+		Order("name ASC").Limit(paging.Limit).Offset(paging.Offset).Find(&data)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
 	}
-	response.OK(c, data)
+	response.Paging(c, data, rowCount)
 
 }
 
