@@ -61,6 +61,7 @@ func getRouter() *gin.Engine {
 		productRouter.POST("/findById", controller.FindProductById)
 		productRouter.POST("/findByCategory", controller.FindProductByCategory)
 		productRouter.POST("/findActiveByCategory", controller.FindActiveProductByCategory)
+		productRouter.POST("/findActiveByCategoryParam", controller.FindActiveProductByCategoryParam)
 		productRouter.POST("/create", controller.CreateProduct)
 		productRouter.POST("/update", controller.UpdateProduct)
 		productRouter.POST("/delete", controller.DeleteProduct)

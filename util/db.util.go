@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/chanderah/menu-go/model"
 	"github.com/joho/godotenv"
@@ -14,7 +16,11 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-var DB *gorm.DB
+var (
+	DB          *gorm.DB
+	TB_PREFIX   string
+	TB_SINGULAR bool
+)
 
 func sync(db *gorm.DB) {
 	db.AutoMigrate(&model.User{})
@@ -30,13 +36,17 @@ func GetConnectionMySql() {
 	}
 
 	dsn := os.Getenv("DB_DSN")
+	TB_PREFIX = os.Getenv("TB_PREFIX")
+	TB_SINGULAR, err = strconv.ParseBool(os.Getenv("TB_SINGULAR"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "tb_",
-			SingularTable: true,
-			// TablePrefix:   "tutorial.",
-			// SingularTable: false,
+			TablePrefix:   TB_PREFIX,
+			SingularTable: TB_SINGULAR,
 		},
 	})
 
@@ -75,4 +85,11 @@ func GetConnectionPostgres() {
 		log.Fatal("Failed to connect to the Database!")
 	}
 	sync(db)
+}
+
+func GetTableName(structName string) string {
+	if !TB_SINGULAR {
+		structName += "s"
+	}
+	return TB_PREFIX + strings.ToLower(structName)
 }

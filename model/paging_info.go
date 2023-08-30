@@ -1,7 +1,7 @@
 package model
 
 type PagingInfo struct {
-	Field     `json:"field,omitempty"`
+	Field     Field  `json:"field,omitempty"`
 	Filter    string `json:"filter,omitempty"`
 	Limit     int    `json:"limit,omitempty"`
 	Offset    int    `json:"offset,omitempty"`
