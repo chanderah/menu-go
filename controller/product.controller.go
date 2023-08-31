@@ -49,7 +49,9 @@ func GetActiveProducts(c *gin.Context) {
 		filter = fmt.Sprintf("%s AND name LIKE '%%%s%%'", filter, paging.Filter)
 	}
 
-	res := util.DB.Model(&model.Product{}).Where(filter).Order(util.StringJoin("name", "ASC")).Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
+	res := util.DB.Model(&model.Product{}).Where(filter).
+		Order(util.StringJoin("name", "ASC")).Count(&rowCount).
+		Limit(paging.Limit).Offset(paging.Offset).Find(&data)
 	if res.Error != nil {
 		if !errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			response.AppError(c, res.Error.Error())
@@ -82,7 +84,9 @@ func FindProductByCategory(c *gin.Context) {
 	util.GetPaging(&paging)
 
 	filter := fmt.Sprintf("category_id = %s AND name LIKE '%%%[2]s%%' OR code LIKE '%%%[2]s%%' OR CAST(price AS CHAR) LIKE '%%%[2]s%%'", paging.Field.Value, paging.Filter)
-	res := util.DB.Model(&model.Product{}).Where(filter).Order(util.StringJoin(paging.SortField, paging.SortOrder)).Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
+	res := util.DB.Model(&model.Product{}).Where(filter).Count(&rowCount).
+		Order(util.StringJoin(paging.SortField, paging.SortOrder)).
+		Limit(paging.Limit).Offset(paging.Offset).Find(&data)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
@@ -100,10 +104,8 @@ func FindActiveProductByCategory(c *gin.Context) {
 
 	filter := fmt.Sprintf("category_id = %d AND name LIKE '%%%s%%'", paging.Field.Value.(uint), paging.Filter)
 	res := util.DB.Model(&model.Product{}).
-		Where(filter).
-		Count(&rowCount).
-		Order("name ASC").
-		Limit(paging.Limit).Offset(paging.Offset).Find(&data)
+		Where(filter).Count(&rowCount).
+		Order("name ASC").Limit(paging.Limit).Offset(paging.Offset).Find(&data)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
@@ -122,8 +124,7 @@ func FindActiveProductByCategoryParam(c *gin.Context) {
 	categoryId := util.DB.Model(&model.Category{}).Select("id").Where("param = ?", strings.ToLower(paging.Field.Value.(string))).Limit(1)
 	res := util.DB.Model(&model.Product{}).
 		Where("category_id = (?)", categoryId).
-		Where(fmt.Sprintf("name LIKE '%%%s%%'", paging.Filter)).
-		Count(&rowCount).
+		Where(fmt.Sprintf("name LIKE '%%%s%%'", paging.Filter)).Count(&rowCount).
 		Order("name ASC").Limit(paging.Limit).Offset(paging.Offset).Find(&data)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
@@ -171,7 +172,7 @@ func CreateProduct(c *gin.Context) {
 }
 
 func UpdateProduct(c *gin.Context) {
-	var req model.Product
+	var req = model.Product{}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
@@ -193,15 +194,7 @@ func UpdateProduct(c *gin.Context) {
 			return
 		}
 		req.Image = imageUrl
-
-		fmt.Println(imageUrl)
-		fmt.Println(req.Image)
-
 		util.RemoveFile(data.Image)
-		// if err := util.RemoveFile(data.Image); err != nil {
-		// 	response.Error(c, 500, err.Error())
-		// 	return
-		// }
 	}
 
 	if res := util.DB.Model(&req).Updates(&req); res.Error != nil {
@@ -212,9 +205,9 @@ func UpdateProduct(c *gin.Context) {
 }
 
 func DeleteProduct(c *gin.Context) {
-	var req model.Product
-
+	var req = model.Product{}
 	c.ShouldBindJSON(&req)
+
 	if res := util.DB.First(&req, "id = ?", req.ID); res.Error != nil {
 		response.Error(c, http.StatusNotFound, "Data not found!")
 		return
