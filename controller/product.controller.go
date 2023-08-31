@@ -123,7 +123,7 @@ func FindActiveProductByCategoryParam(c *gin.Context) {
 
 	categoryId := util.DB.Model(&model.Category{}).Select("id").Where("param = ?", strings.ToLower(paging.Field.Value.(string))).Limit(1)
 	res := util.DB.Model(&model.Product{}).
-		Where("category_id = (?)", categoryId).
+		Where("status = 1 AND category_id = (?)", categoryId).
 		Where(fmt.Sprintf("name LIKE '%%%s%%'", paging.Filter)).Count(&rowCount).
 		Order("name ASC").Limit(paging.Limit).Offset(paging.Offset).Find(&data)
 	if res.Error != nil {
