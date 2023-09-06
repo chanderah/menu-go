@@ -62,6 +62,26 @@ func CreateOrder(c *gin.Context) {
 	response.Void(c)
 }
 
+func UpdateOrder(c *gin.Context) {
+	var req = model.Order{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var data = model.Order{}
+	if res := util.DB.First(&data, "id = ?", req.ID); res.Error != nil {
+		response.Error(c, http.StatusNotFound, "Data not found!")
+		return
+	}
+
+	if res := util.DB.Model(&req).Updates(&req); res.Error != nil {
+		response.AppError(c, res.Error.Error())
+		return
+	}
+	response.Void(c)
+}
+
 func DeleteOrder(c *gin.Context) {
 	var req = model.Order{}
 	c.ShouldBindJSON(&req)

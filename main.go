@@ -66,6 +66,14 @@ func getRouter() *gin.Engine {
 		productRouter.POST("/update", controller.UpdateProduct)
 		productRouter.POST("/delete", controller.DeleteProduct)
 	}
+	{
+		orderRouter := apiRouter.Group("/order")
+		orderRouter.POST("/findAll", controller.GetOrders)
+		orderRouter.POST("/findById", controller.FindOrderById)
+		orderRouter.POST("/create", controller.CreateOrder)
+		orderRouter.POST("/update", controller.UpdateOrder)
+		orderRouter.POST("/delete", controller.DeleteOrder)
+	}
 	return router
 }
 
