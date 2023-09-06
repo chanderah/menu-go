@@ -11,14 +11,14 @@ type Product struct {
 	Code        string    `json:"code,omitempty" gorm:"type:varchar(100);index:product_ix1;index:product_ix2"`
 	CategoryId  uint      `json:"categoryId,omitempty" gorm:"index:product_ix2"`
 	Name        string    `json:"name" gorm:"type:varchar(255);not null;index:product_ix1;index:product_ix2" binding:"required" `
-	Description string    `json:"description,omitempty"`
+	Description string    `json:"description,omitempty" gorm:"type:varchar(100)"`
 	Options     Options   `json:"options" gorm:"type:json"`
 	Price       uint      `json:"price" gorm:"not null;index:product_ix1;index:product_ix2" binding:"required"`
 	Quantity    uint      `json:"quantity,omitempty"`
 	Image       string    `json:"image,omitempty"`
 	Featured    *bool     `json:"featured,omitempty"`
 	Status      *bool     `json:"status,omitempty"`
-	UserCreated uint      `json:"userCreated,omitempty" gorm:"not null" binding:"required" `
+	UserCreated uint      `json:"userCreated,omitempty" gorm:"not null" `
 	UpdatedAt   time.Time `json:"updatedAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
 	CreatedAt   time.Time `json:"createdAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"`
 }
