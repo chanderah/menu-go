@@ -10,9 +10,9 @@ import (
 
 type Order struct {
 	ID         uuid.UUID `json:"id" gorm:"primaryKey"`
-	TableNo    string    `json:"tableNo" gorm:"index:order_ix1" binding:"required"`
-	TotalPrice uint      `json:"totalPrice" binding:"required"`
-	Products   Products  `json:"products" gorm:"type:json" binding:"required"`
+	TableId    string    `json:"tableId" gorm:"index:order_ix1;unique;not null" binding:"required"`
+	TotalPrice uint      `json:"totalPrice" gorm:"not null" binding:"required"`
+	Products   Products  `json:"products" gorm:"type:json;not null" binding:"required"`
 	Status     string    `json:"status,omitempty"`
 
 	CreatedAt time.Time `json:"createdAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"`
