@@ -10,7 +10,7 @@ import (
 
 type Order struct {
 	ID         uuid.UUID `json:"id" gorm:"primaryKey"`
-	TableId    string    `json:"tableId" gorm:"index:order_ix1;unique;not null" binding:"required"`
+	TableId    uint      `json:"tableId" gorm:"index:order_ix1;unique;not null" binding:"required"`
 	TotalPrice uint      `json:"totalPrice" gorm:"not null" binding:"required"`
 	Products   Products  `json:"products" gorm:"type:json;not null" binding:"required"`
 	Status     string    `json:"status,omitempty"`

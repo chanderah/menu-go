@@ -46,6 +46,14 @@ func getRouter() *gin.Engine {
 		userRouter.POST("/delete", controller.DeleteUser)
 	}
 	{
+		tableRouter := apiRouter.Group("/table")
+		tableRouter.POST("/findAll", controller.GetTables)
+		tableRouter.POST("/findById", controller.FindTableById)
+		tableRouter.POST("/create", controller.CreateTable)
+		tableRouter.POST("/update", controller.UpdateTable)
+		tableRouter.POST("/delete", controller.DeleteTable)
+	}
+	{
 		categoryRouter := apiRouter.Group("/category")
 		categoryRouter.POST("/findAll", controller.GetCategories)
 		categoryRouter.POST("/findById", controller.FindCategoryById)
