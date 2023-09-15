@@ -61,7 +61,7 @@ func GetConnectionMySql() {
 func GetConnectionPostgres() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file!")
+		log.Fatal("Failed loading .env file!")
 	}
 	// connStr := os.Getenv("DB_URL")
 	DBHost := os.Getenv("DB_HOST")
