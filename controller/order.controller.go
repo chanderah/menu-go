@@ -55,6 +55,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
+	req.GenerateUUID()
 	if res := util.DB.Create(&req); res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
