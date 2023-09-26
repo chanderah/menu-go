@@ -22,7 +22,7 @@ func GetOrders(c *gin.Context) {
 
 	filter := "1=1"
 	if !util.IsEmpty(paging.Filter) {
-		filter = fmt.Sprintf("tableNo LIKE '%%%[1]s%%' OR CAST(products AS CHAR) LIKE '%%%[1]s%%' OR CAST(total_price AS CHAR) LIKE '%%%[1]s%%'", paging.Filter)
+		filter = fmt.Sprintf("CAST(table_id AS char) LIKE '%%%[1]s%%' OR CAST(products AS char) LIKE '%%%[1]s%%' OR CAST(total_price AS char) LIKE '%%%[1]s%%'", paging.Filter)
 	}
 
 	res := util.DB.Model(&model.Order{}).Where(filter).Count(&rowCount).
@@ -55,7 +55,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	req.GenerateUUID()
+	// req.GenerateUUID()
 	if res := util.DB.Create(&req); res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return

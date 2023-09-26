@@ -4,12 +4,10 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Order struct {
-	ID         uuid.UUID     `json:"id" gorm:"primaryKey"`
+	ID         uint     `json:"id" gorm:"primaryKey"`
 	TableId    uint          `json:"tableId" gorm:"index:order_ix1;not null" binding:"required"`
 	TotalPrice uint          `json:"totalPrice" gorm:"not null" binding:"required"`
 	Status     *bool         `json:"status,omitempty"`
@@ -18,14 +16,14 @@ type Order struct {
 	CreatedAt time.Time `json:"createdAt" gorm:"type:DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"`
 }
 
-func (o *Order) GenerateUUID() error {
-	uuid, err := uuid.NewRandom()
-	if err != nil {
-		return err
-	}
-	o.ID = uuid
-	return nil
-}
+// func (o *Order) GenerateUUID() error {
+// 	uuid, err := uuid.NewRandom()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	o.ID = uuid
+// 	return nil
+// }
 
 type ProductsBasic []ProductBasic
 

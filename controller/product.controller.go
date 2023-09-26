@@ -23,7 +23,7 @@ func GetProducts(c *gin.Context) {
 
 	filter := "1=1"
 	if !util.IsEmpty(paging.Filter) {
-		filter = fmt.Sprintf("name LIKE '%%%[1]s%%' OR code LIKE '%%%[1]s%%' OR CAST(price AS CHAR) LIKE '%%%[1]s%%'", paging.Filter)
+		filter = fmt.Sprintf("name LIKE '%%%[1]s%%' OR code LIKE '%%%[1]s%%' OR CAST(price AS char) LIKE '%%%[1]s%%'", paging.Filter)
 	}
 
 	res := util.DB.Model(&model.Product{}).Where(filter).Order(util.StringJoin(paging.SortField, paging.SortOrder)).Count(&rowCount).Limit(paging.Limit).Offset(paging.Offset).Find(&data)
@@ -83,7 +83,7 @@ func FindProductByCategory(c *gin.Context) {
 	c.ShouldBindJSON(&paging)
 	util.GetPaging(&paging)
 
-	filter := fmt.Sprintf("category_id = %s AND name LIKE '%%%[2]s%%' OR code LIKE '%%%[2]s%%' OR CAST(price AS CHAR) LIKE '%%%[2]s%%'", paging.Field.Value, paging.Filter)
+	filter := fmt.Sprintf("category_id = %s AND name LIKE '%%%[2]s%%' OR code LIKE '%%%[2]s%%' OR CAST(price AS char) LIKE '%%%[2]s%%'", paging.Field.Value, paging.Filter)
 	res := util.DB.Model(&model.Product{}).Where(filter).Count(&rowCount).
 		Order(util.StringJoin(paging.SortField, paging.SortOrder)).
 		Limit(paging.Limit).Offset(paging.Offset).Find(&data)
