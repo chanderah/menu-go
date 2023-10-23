@@ -40,6 +40,14 @@ func GetPaging(paging *model.PagingInfo) {
 	}
 }
 
+func GetNewUuid() string {
+	uuid := make([]byte, 4)
+    if _, err := rand.Read(uuid); err != nil {
+        panic(err)
+    }
+    return fmt.Sprintf("%X", uuid);
+}
+
 func EncryptAES(data []byte) (string, error) {
 	result := make([]byte, aes.BlockSize+len(data))
 	iv := result[:aes.BlockSize]

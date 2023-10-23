@@ -16,23 +16,21 @@ import (
 )
 
 func main() {
-	// test()
-	serve()
+	test()
+	// serve()
 	// controller.SendMail("Http listen for http://go.chandrasa.fun started!", "aaa")
 	// controller.SendMail("Http listen for http://go.chandrasa.fun started!", fmt.Sprintf("Your pid is: %d", os.Getpid()))
 }
 
-// func test() {
-// 	encrypted, err := util.EncryptAES([]byte("aaa"));
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-// 	fmt.Println([]byte(encrypted))
-// }
+func test() {
+	// encrypted, err := util.EncryptAES([]byte("aaa"));
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// fmt.Println([]byte(encrypted))
 
-// func toByte(data string) []byte {
-// 	return []byte(data)
-// }
+	fmt.Println(util.GetNewUuid())
+}
 
 func getRouter() *gin.Engine {
 	router := gin.New()

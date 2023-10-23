@@ -55,7 +55,20 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	// req.GenerateUUID()
+	// uuidExists := true
+	// for uuidExists {
+	// 	req.OrderCode = util.GetNewUuid();
+	// 	if res := util.DB.First(&req, "order_code = ?", req.OrderCode); res.Error != nil {
+	// 		uuidExists = false
+	// 	}
+	// }
+
+	var count int64 = 1
+	for count > 0 {
+		req.OrderCode = util.GetNewUuid();
+		util.DB.Model(&model.Order{}).Where("order_code = ?", req.OrderCode).Count(&count)
+	}
+
 	if res := util.DB.Create(&req); res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return

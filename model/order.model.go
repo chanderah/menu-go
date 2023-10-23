@@ -7,7 +7,8 @@ import (
 )
 
 type Order struct {
-	ID         uint     `json:"id" gorm:"primaryKey"`
+	ID uint     `json:"id" gorm:"primaryKey"`
+	OrderCode	string     `json:"order_code" gorm:"type:varchar(8);unique;not null"`
 	TableId    uint          `json:"tableId" gorm:"index:order_ix1;not null" binding:"required"`
 	TotalPrice uint          `json:"totalPrice" gorm:"not null" binding:"required"`
 	Status     *bool         `json:"status,omitempty"`
