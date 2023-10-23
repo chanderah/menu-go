@@ -66,7 +66,10 @@ func CreateOrder(c *gin.Context) {
 	var count int64 = 1
 	for count > 0 {
 		req.OrderCode = util.GetNewUuid();
-		util.DB.Model(&model.Order{}).Where("order_code = ?", req.OrderCode).Count(&count)
+		if res := util.DB.Model(&model.Order{}).Where("order_code = ?", req.OrderCode).Count(&count); res.Error != nil {
+			response.AppError(c, res.Error.Error())
+			return
+		}
 	}
 
 	if res := util.DB.Create(&req); res.Error != nil {
