@@ -26,7 +26,7 @@ func GetOrders(c *gin.Context) {
 	}
 
 	res := util.DB.Model(&model.Order{}).Where(filter).Count(&rowCount).
-		Order(util.StringJoin("created_at DESC")).Limit(paging.Limit).Offset(paging.Offset).
+		Order(util.StringJoin(paging.SortField, paging.SortOrder)).Limit(paging.Limit).Offset(paging.Offset).
 		Find(&data)
 	if res.Error != nil {
 		if !errors.Is(res.Error, gorm.ErrRecordNotFound) {
@@ -65,7 +65,7 @@ func CreateOrder(c *gin.Context) {
 
 	var count int64 = 1
 	for count > 0 {
-		req.OrderCode = util.GetNewUuid();
+		req.OrderCode = util.GetNewUuid()
 		if res := util.DB.Model(&model.Order{}).Where("order_code = ?", req.OrderCode).Count(&count); res.Error != nil {
 			response.AppError(c, res.Error.Error())
 			return

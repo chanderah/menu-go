@@ -16,8 +16,8 @@ import (
 )
 
 func main() {
-	test()
-	// serve()
+	// test()
+	serve()
 	// controller.SendMail("Http listen for http://go.chandrasa.fun started!", "aaa")
 	// controller.SendMail("Http listen for http://go.chandrasa.fun started!", fmt.Sprintf("Your pid is: %d", os.Getpid()))
 }
