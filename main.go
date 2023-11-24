@@ -88,6 +88,7 @@ func getRouter() *gin.Engine {
 	{
 		orderRouter := apiRouter.Group("/order")
 		orderRouter.POST("/findAll", controller.GetOrders)
+		orderRouter.POST("/findLive", controller.GetLiveOrders)
 		orderRouter.POST("/findById", controller.FindOrderById)
 		orderRouter.POST("/create", controller.CreateOrder)
 		orderRouter.POST("/update", controller.UpdateOrder)
@@ -98,7 +99,7 @@ func getRouter() *gin.Engine {
 
 func serve() {
 	defer func() {
-		if err := recover(); err != nil { //1
+		if err := recover(); err != nil {
 			fmt.Println("Gentle recovery from panic: %w", err)
 		}
 	}()

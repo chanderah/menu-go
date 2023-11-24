@@ -12,6 +12,20 @@ import (
 	"gorm.io/gorm"
 )
 
+func GetLiveOrders(c *gin.Context) {
+	data := []model.Order{}
+
+	req := model.GetLiveOrder{}
+	c.ShouldBindJSON(&req)
+
+ 	res := util.DB.Raw(fmt.Sprintf(`CALL USP_GET_LIVE_ORDERS(%d, %d)`, req.ID, req.Limit)).Scan(&data);
+	if res.Error != nil {
+		response.AppError(c, res.Error.Error())
+		return
+	}
+	response.OK(c, data)
+}
+
 func GetOrders(c *gin.Context) {
 	var rowCount int64
 	data := []model.Order{}
