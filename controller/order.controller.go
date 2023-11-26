@@ -13,9 +13,9 @@ import (
 )
 
 func GetLiveOrders(c *gin.Context) {
-	data := []model.Order{}
+	data := []model.LiveOrderDTO{}
 
-	req := model.GetLiveOrder{}
+	req := model.LiveOrder{}
 	c.ShouldBindJSON(&req)
 
  	res := util.DB.Raw(fmt.Sprintf(`CALL USP_GET_LIVE_ORDERS(%d, %d)`, req.ID, req.Limit)).Scan(&data);
