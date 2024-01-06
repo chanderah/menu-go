@@ -10,7 +10,7 @@ type Order struct {
 	ID         uint          `json:"id" gorm:"primaryKey"`
 	OrderCode  string        `json:"orderCode" gorm:"type:varchar(8);unique;not null"`
 	TableId    uint          `json:"tableId" gorm:"index:order_ix1;not null" binding:"required"`
-	IsNew    *bool     			`json:"isNew" gorm:"-"`
+	IsNew      *bool         `json:"isNew" gorm:"-"`
 	TotalPrice uint          `json:"totalPrice" gorm:"not null" binding:"required"`
 	Status     *bool         `json:"status,omitempty"`
 	Products   ProductsBasic `json:"products" gorm:"type:json;not null" binding:"required"`
@@ -19,7 +19,7 @@ type Order struct {
 }
 
 type LiveOrder struct {
-	ID uint `json:"id" gorm:"primaryKey"`
+	ID    uint `json:"id" gorm:"primaryKey"`
 	Limit uint `json:"limit"`
 }
 
