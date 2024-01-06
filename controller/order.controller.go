@@ -18,7 +18,7 @@ func GetLiveOrders(c *gin.Context) {
 	req := model.LiveOrder{}
 	c.ShouldBindJSON(&req)
 
- 	res := util.DB.Raw(fmt.Sprintf(`CALL USP_GET_LIVE_ORDERS(%d, %d)`, req.ID, req.Limit)).Scan(&data);
+	res := util.DB.Raw(fmt.Sprintf(`CALL USP_GET_LIVE_ORDERS(%d, %d)`, req.ID, req.Limit)).Scan(&data)
 	if res.Error != nil {
 		response.AppError(c, res.Error.Error())
 		return
@@ -68,14 +68,6 @@ func CreateOrder(c *gin.Context) {
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
 	}
-
-	// uuidExists := true
-	// for uuidExists {
-	// 	req.OrderCode = util.GetNewUuid();
-	// 	if res := util.DB.First(&req, "order_code = ?", req.OrderCode); res.Error != nil {
-	// 		uuidExists = false
-	// 	}
-	// }
 
 	var count int64 = 1
 	for count > 0 {
